@@ -146,10 +146,112 @@ type
     property OnStopTimer: TNotifyEvent read FOnStopTimer write FOnStopTimer;
   end;
 
+
+  { TCustomSplitter }
+
+  TCustomSplitter = class(TCustomControl)
+  private
+    FAlignment: TAlignment;
+    FSplitDragging: Boolean;
+    function GetResizeControl: TControl;
+  protected
+    procedure Changed; override;
+    function CreateHandleElement: TJSHTMLElement; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  public
+    property Align default alLeft;
+  end;
+
 implementation
 
 uses
   WCLStrConsts;
+
+{ TCustomSplitter }
+
+function TCustomSplitter.GetResizeControl: TControl;
+var
+  i: Integer;
+  CurControl: TControl;
+  BestValue: integer;
+
+  procedure FindNearerControl(CurValue, Limit: integer);
+  begin
+    if (CurValue <= Limit) and ((Result = nil) or (BestValue < CurValue)) then
+    begin
+      BestValue := CurValue;
+      Result := CurControl;
+    end;
+  end;
+
+begin
+  Result := nil;
+  BestValue := 0;
+  if not (Align in [alLeft,alTop,alRight,alBottom]) then
+    exit;
+  for i := 0 to Parent.ControlCount - 1 do
+  begin
+    CurControl := Parent.Controls[i];
+    if (CurControl <> Self) and (CurControl.Visible) and
+       ((CurControl.Align = Self.Align) or (CurControl.Align=alClient)) then
+    begin
+      case Self.Align of
+        alLeft:   FindNearerControl(CurControl.Left + CurControl.Width, Left);
+        alTop:    FindNearerControl(CurControl.Top + CurControl.Height, Top);
+        alRight:  FindNearerControl(-CurControl.Left, -Left - Width);
+        alBottom: FindNearerControl(-CurControl.Top, -Top - Height);
+      end;
+    end;
+  end;
+end;
+
+procedure TCustomSplitter.Changed;
+begin
+  inherited Changed;
+  case Align of
+    alLeft:;
+
+//      Height := TCustomControl(Parent).Height;
+  end;
+
+end;
+
+function TCustomSplitter.CreateHandleElement: TJSHTMLElement;
+begin
+  Result := TJSHTMLElement(Document.CreateElement('div'));
+end;
+
+procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  Writeln(Button);
+
+  if Button = mbLeft then
+  begin
+    Writeln('Left Button press');
+      Writeln('Left Button press');
+//    GetCursorPos(MousePos);
+//    StartSplitterMove(MousePos);
+  end;
+
+end;
+
+procedure TCustomSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  Writeln('Mouse Up');
+end;
+
+constructor TCustomSplitter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  Align := alLeft;
+end;
 
 { TCustomTimer }
 

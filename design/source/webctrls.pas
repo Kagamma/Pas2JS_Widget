@@ -889,9 +889,17 @@ type
     property FixedRows;
     property Options default [];
     property RowCount;
-
     property OnSelection;
   end;
+
+  TWSplitter = class(TCustomSplitter)
+  published
+    property Align;
+    property Color;
+    property Visible;
+    property Width;
+  end;
+
 
 procedure Register;
 
@@ -919,7 +927,8 @@ begin
     TWFileButton,
     TWDataGrid,
     TWPagination,
-    TWStringGrid
+    TWStringGrid,
+    TWSplitter
     ]);
 end;
 

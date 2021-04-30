@@ -780,6 +780,12 @@ type
     property OnPageClick;
   end;
 
+  TWSplitter = class(TCustomSplitter)
+  published
+    property Align;
+    property Color;
+  end;
+
 implementation
 
 { TWFloatEdit }

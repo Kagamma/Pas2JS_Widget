@@ -825,6 +825,7 @@ end;
 function ExtractMouseButton(const AEvent: TJSMouseEvent): TMouseButton;
 begin
   case AEvent.button of
+    0: Result := mbLeft;
     1: Result := mbMiddle;
     2: Result := mbRight;
     else
