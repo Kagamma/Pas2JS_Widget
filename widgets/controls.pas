@@ -1423,14 +1423,18 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  VButton := ExtractMouseButton(AEvent);
-  VOffSets := OffSets(FHandleElement);
-  VShift := ExtractShiftState(AEvent);
-  X := Trunc(AEvent.ClientX - VOffSets.Left);
-  Y := Trunc(AEvent.ClientY - VOffSets.Top);
-  AEvent.StopPropagation;
-  MouseDown(VButton, VShift, X, Y);
-  Result := True;
+  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
+  begin
+    VButton := ExtractMouseButton(AEvent);
+    VOffSets := OffSets(FHandleElement);
+    VShift := ExtractShiftState(AEvent);
+    X := Trunc(AEvent.ClientX - VOffSets.Left);
+    Y := Trunc(AEvent.ClientY - VOffSets.Top);
+  //  AEvent.stopImmediatePropagation;
+  //  AEvent.StopPropagation;
+    MouseDown(VButton, VShift, X, Y);
+  end;
+  Result := true;
 end;
 
 function TControl.HandleMouseEnter(AEvent: TJSMouseEvent): boolean;
@@ -1453,13 +1457,16 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  VOffSets := OffSets(FHandleElement);
-  VShift := ExtractShiftState(AEvent);
-  X := Trunc(AEvent.ClientX - VOffSets.Left);
-  Y := Trunc(AEvent.ClientY - VOffSets.Top);
-  AEvent.StopPropagation;
-  MouseMove(VShift, X, Y);
-  Result := True;
+  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
+  begin
+    VOffSets := OffSets(FHandleElement);
+    VShift := ExtractShiftState(AEvent);
+    X := Trunc(AEvent.ClientX - VOffSets.Left);
+    Y := Trunc(AEvent.ClientY - VOffSets.Top);
+//    AEvent.StopPropagation;
+    MouseMove(VShift, X, Y);
+  end;
+  Result := true;
 end;
 
 function TControl.HandleMouseUp(AEvent: TJSMouseEvent): boolean;
@@ -1469,13 +1476,16 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  VButton := ExtractMouseButton(AEvent);
-  VOffSets := OffSets(FHandleElement);
-  VShift := ExtractShiftState(AEvent);
-  X := Trunc(AEvent.ClientX - VOffSets.Left);
-  Y := Trunc(AEvent.ClientY - VOffSets.Top);
-  AEvent.StopPropagation;
-  MouseUp(VButton, VShift, X, Y);
+  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
+  begin
+    VButton := ExtractMouseButton(AEvent);
+    VOffSets := OffSets(FHandleElement);
+    VShift := ExtractShiftState(AEvent);
+    X := Trunc(AEvent.ClientX - VOffSets.Left);
+    Y := Trunc(AEvent.ClientY - VOffSets.Top);
+    //AEvent.StopPropagation;
+    MouseUp(VButton, VShift, X, Y);
+  end;
   Result := True;
 end;
 
@@ -1669,11 +1679,13 @@ end;
 
 procedure TControl.RegisterHandleEvents;
 begin
+ FHandleElement.AddEventListener('mousedown', @HandleMouseDown);
+
   with FHandleElement do
   begin
     AddEventListener('click', @HandleClick);
     AddEventListener('dblclick', @HandleDblClick);
-    AddEventListener('mousedown', @HandleMouseDown);
+//    AddEventListener('mousedown', @HandleMouseDown);
     AddEventListener('mouseenter', @HandleMouseEnter);
     AddEventListener('mouseleave', @HandleMouseLeave);
     AddEventListener('mousemove', @HandleMouseMove);
@@ -1690,7 +1702,7 @@ begin
   begin
     RemoveEventListener('click', @HandleClick);
     RemoveEventListener('dblclick', @HandleDblClick);
-    RemoveEventListener('mousedown', @HandleMouseDown);
+//    RemoveEventListener('mousedown', @HandleMouseDown);
     RemoveEventListener('mouseenter', @HandleMouseEnter);
     RemoveEventListener('mouseleave', @HandleMouseLeave);
     RemoveEventListener('mousemove', @HandleMouseMove);

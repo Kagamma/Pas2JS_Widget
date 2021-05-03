@@ -151,18 +151,23 @@ type
 
   TCustomSplitter = class(TCustomControl)
   private
-    FAlignment: TAlignment;
+    FX: integer;
+    FY: integer;
     FSplitDragging: Boolean;
+    FMouseUpHandler: TJSMouseEventHandler;
+    FMouseMoveHandler: TJSMouseEventHandler;
+    FResizeControl: TControl;
+    function DoMouseMove(aEvent: TJSMouseEvent): boolean;
+    function DoMouseUp(aEvent: TJSMouseEvent): boolean;
     function GetResizeControl: TControl;
   protected
     procedure Changed; override;
     function CreateHandleElement: TJSHTMLElement; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   public
-    property Align default alLeft;
+    property Align default alNone;
   end;
 
 implementation
@@ -208,15 +213,30 @@ begin
   end;
 end;
 
+
+function TCustomSplitter.DoMouseMove(aEvent: TJSMouseEvent): boolean;
+begin
+  if not Assigned(FResizeControl) then
+    exit;
+  case Align of
+    alLeft:   FResizeControl.Width := round(aEvent.X);
+    alRight:  FResizeControl.Width := FResizeControl.Parent.Width - round(aEvent.X);
+    alTop:   FResizeControl.Height := round(aEvent.Y);
+    alBottom:  FResizeControl.Height := FResizeControl.Parent.Height - round(aEvent.Y);
+  end;
+  Result := True;
+end;
+
+function TCustomSplitter.DoMouseUp(aEvent: TJSMouseEvent): boolean;
+begin
+  document.removeEventListener('mousemove', FMouseMoveHandler);
+  document.removeEventListener('mouseup', FMouseUpHandler);
+  Result := true;
+end;
+
 procedure TCustomSplitter.Changed;
 begin
   inherited Changed;
-  case Align of
-    alLeft:;
-
-//      Height := TCustomControl(Parent).Height;
-  end;
-
 end;
 
 function TCustomSplitter.CreateHandleElement: TJSHTMLElement;
@@ -227,30 +247,19 @@ end;
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  Writeln(Button);
-
   if Button = mbLeft then
   begin
-    Writeln('Left Button press');
-      Writeln('Left Button press');
-//    GetCursorPos(MousePos);
-//    StartSplitterMove(MousePos);
+    FMouseMoveHandler := @DoMouseMove;
+    FMouseUpHandler := @DoMouseUp;
+    document.addEventListener('mousemove', FMouseMoveHandler);
+    document.addEventListener('mouseup', FMouseUpHandler);
+    FResizeControl := GetResizeControl;
   end;
-
-end;
-
-procedure TCustomSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  Writeln('Mouse Up');
 end;
 
 constructor TCustomSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  Align := alLeft;
 end;
 
 { TCustomTimer }

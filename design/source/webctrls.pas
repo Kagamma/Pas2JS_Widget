@@ -894,7 +894,7 @@ type
 
   TWSplitter = class(TCustomSplitter)
   published
-    property Align;
+    property Align default alNone;
     property Color;
     property Visible;
     property Width;
