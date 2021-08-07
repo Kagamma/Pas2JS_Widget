@@ -668,10 +668,10 @@ begin
         end;
         Style.SetProperty('border-width', IntToStr(FBevelWidth) + 'px');
         Style.SetProperty('border-style', 'solid');
-        Style.SetProperty('border-left-color', JSColor(VTopColor));
-        Style.SetProperty('border-top-color', JSColor(VTopColor));
-        Style.SetProperty('border-right-color', JSColor(VBottomColor));
-        Style.SetProperty('border-bottom-color', JSColor(VBottomColor));
+        Style.SetProperty('border-left-color', JSColor(VTopColor, Alpha));
+        Style.SetProperty('border-top-color', JSColor(VTopColor, Alpha));
+        Style.SetProperty('border-right-color', JSColor(VBottomColor, Alpha));
+        Style.SetProperty('border-bottom-color', JSColor(VBottomColor, Alpha));
       end;
       /// Focus highlight
       Style.SetProperty('outline', 'none');

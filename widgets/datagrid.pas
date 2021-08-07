@@ -1020,7 +1020,7 @@ begin
         '    padding: 0;' +
         '    overflow: hidden;' +
         '    border: ' + IntToStr(IfThen(VColumn.Visible, 1, 0)) + 'px solid #ccc;' +
-        '    background-color: ' + JSColor(VColumn.Color) + ';' +
+        '    background-color: ' + JSColor(VColumn.Color, Alpha) + ';' +
         '    font: ' + JSFont(VColumn.Font) + ';' +
         '    text-align: ' + JSAlign(VColumn.Alignment) + ';' +
         '    text-overflow: clip;' +

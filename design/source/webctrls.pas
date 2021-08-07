@@ -539,11 +539,13 @@ type
 
   TWPanel = class(TCustomPanel)
   private
+    FAlpha: byte;
     FHandleClass: string;
     FHandleId: string;
   published
     property Align;
     property Alignment;
+    property Alpha: byte read FAlpha write FAlpha;
     property Anchors;
     property AutoSize;
     property BevelColor;

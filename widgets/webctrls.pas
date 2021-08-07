@@ -426,6 +426,7 @@ type
   published
     property Align;
     property Alignment;
+    property Alpha;
     property Anchors;
     property AutoSize;
     property BevelColor;

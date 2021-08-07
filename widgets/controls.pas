@@ -196,6 +196,7 @@ type
   TControl = class(TComponent)
   private
     FAlign: TAlign;
+    FAlpha: byte;
     FAnchors: TAnchors;
     FAutoSize: boolean;
     FBorderSpacing: TControlBorderSpacing;
@@ -344,6 +345,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: NativeInt); virtual;
   public
     property Align: TAlign read FAlign write SetAlign;
+    property Alpha: byte read FAlpha write FAlpha;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
@@ -1574,7 +1576,7 @@ begin
       if (FHandleClass = '') and (FHandleId = '') then
       begin      
         /// Font
-        Style.SetProperty('color', JSColor(FFont.Color));
+        Style.SetProperty('color', JSColor(FFont.Color, Alpha));
         UpdateHtmlElementFont(FHandleElement, FFont, False);
         /// Color
         if (FColor in [clDefault, clNone]) then
@@ -1583,7 +1585,7 @@ begin
         end
         else
         begin
-          Style.SetProperty('background-color', JSColor(FColor));
+          Style.SetProperty('background-color', JSColor(FColor, Alpha));
         end;
       end;
 
@@ -2107,6 +2109,7 @@ begin
   FFont := TFont.Create;
   FFont.OnChange := @FontChanged;
   FAlign := alNone;
+  FAlpha := 255;
   FAnchors := [akLeft, akTop];
   FAutoSize := False;
   FCaption := '';

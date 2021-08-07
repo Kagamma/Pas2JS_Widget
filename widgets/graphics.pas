@@ -55,16 +55,16 @@ type
     FCharSet: TFontCharSet;
     FColor: TColor;
     FName: string;
-    FSize: NativeInt;
+    FSize: nativeint;
     FStyle: TFontStyles;
-    FUpdateCount: NativeInt;
+    FUpdateCount: nativeint;
     FOnChange: TNotifyEvent;
-    function GetHeight: NativeInt;
+    function GetHeight: nativeint;
     procedure SetCharSet(AValue: TFontCharSet);
     procedure SetColor(AValue: TColor);
-    procedure SetHeight(AValue: NativeInt);
+    procedure SetHeight(AValue: nativeint);
     procedure SetName(AValue: string);
-    procedure SetSize(AValue: NativeInt);
+    procedure SetSize(AValue: nativeint);
     procedure SetStyle(AValue: TFontStyles);
   protected
     procedure Changed; virtual;
@@ -75,15 +75,15 @@ type
     procedure EndUpdate; virtual;
     function IsEqual(AFont: TFont): boolean; virtual;
     function TextExtent(const AText: string): TSize; virtual;
-    procedure TextSize(const AText: string; var W, H: NativeInt); virtual;
-    function TextHeight(const AText: string): NativeInt; virtual;
-    function TextWidth(const AText: string): NativeInt; virtual;
+    procedure TextSize(const AText: string; var W, H: nativeint); virtual;
+    function TextHeight(const AText: string): nativeint; virtual;
+    function TextWidth(const AText: string): nativeint; virtual;
   published
     property CharSet: TFontCharSet read FCharSet write SetCharSet;
     property Color: TColor read FColor write SetColor;
-    property Height: NativeInt read GetHeight write SetHeight;
+    property Height: nativeint read GetHeight write SetHeight;
     property Name: string read FName write SetName;
-    property Size: NativeInt read FSize write SetSize;
+    property Size: nativeint read FSize write SetSize;
     property Style: TFontStyles read FStyle write SetStyle;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -94,12 +94,12 @@ type
   private
     FColor: TColor;
     FStyle: TPenStyle;
-    FWidth: NativeInt;
-    FUpdateCount: NativeInt;
+    FWidth: nativeint;
+    FUpdateCount: nativeint;
     FOnChange: TNotifyEvent;
     procedure SetColor(AValue: TColor);
     procedure SetStyle(AValue: TPenStyle);
-    procedure SetWidth(AValue: NativeInt);
+    procedure SetWidth(AValue: nativeint);
   protected
     procedure Changed; virtual;
   public
@@ -110,7 +110,7 @@ type
   published
     property Color: TColor read FColor write SetColor;
     property Style: TPenStyle read FStyle write SetStyle;
-    property Width: NativeInt read FWidth write SetWidth;
+    property Width: nativeint read FWidth write SetWidth;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -120,7 +120,7 @@ type
   private
     FColor: TColor;
     FStyle: TBrushStyle;
-    FUpdateCount: NativeInt;
+    FUpdateCount: nativeint;
     FOnChange: TNotifyEvent;
     procedure SetColor(AValue: TColor);
     procedure SetStyle(AValue: TBrushStyle);
@@ -143,7 +143,7 @@ type
     { TODO: Load and save methods }
   private
     FData: string;
-    FUpdateCount: NativeInt;
+    FUpdateCount: nativeint;
     FOnChange: TNotifyEvent;
     procedure SetData(AValue: string);
   protected
@@ -166,7 +166,7 @@ type
     FBrush: TBrush;
     FFont: TFont;
     FPen: TPen;
-    FUpdateCount: NativeInt;
+    FUpdateCount: nativeint;
     FOnChange: TNotifyEvent;
   protected
     FCanvasElement: TJSHTMLCanvasElement;
@@ -189,8 +189,8 @@ type
     procedure Rectangle(const ALeft, ATop, AWidth, AHeight: double); virtual; overload;
     procedure TextOut(X, Y: double; const AText: string); virtual;
     function TextExtent(const AText: string): TSize; virtual;
-    function TextHeight(const AText: string): NativeInt; virtual;
-    function TextWidth(const AText: string): NativeInt; virtual;
+    function TextHeight(const AText: string): nativeint; virtual;
+    function TextWidth(const AText: string): nativeint; virtual;
     property CanvasElement: TJSHTMLCanvasElement read FCanvasElement;
     property ContextElement: TJSCanvasRenderingContext2D read FContextElement;
   published
@@ -232,7 +232,7 @@ const
   clDefault = $20000000;
 
   //// System colors
-  clBase = LongInt($80000000);
+  clBase = longint($80000000);
   clScrollBar = clBase + 0;
   clBackground = clBase + 1;
   clActiveCaption = clBase + 2;
@@ -277,25 +277,26 @@ const
   ffSans = '"Arial Narrow", Arial, "Helvetica Condensed", Helvetica, sans-serif';
   ffTimes = '"Times New Roman", Times, serif';
 
-function JSColor(const AColor: TColor): string;
+function JSColor(const AColor: TColor; AAlpha: byte): string;
 function JSFont(const AFont: TFont): string;
-function JSMeasureText(const AText: string; const AFontName: string; const AFontSize: NativeInt; const AFixedWidth: NativeInt = 0): TSize; overload;
+function JSMeasureText(const AText: string; const AFontName: string; const AFontSize: nativeint; const AFixedWidth: nativeint = 0): TSize; overload;
 
-function PenStyleToCSSBorderStyle(aStyle: TPenStyle): String;
-function AlignmentToCSSAlignment(aAlignment: TAlignment): String;
-function TextLayoutToCSSVerticalAlign(aLayout: TTextLayout): String;
+function PenStyleToCSSBorderStyle(aStyle: TPenStyle): string;
+function AlignmentToCSSAlignment(aAlignment: TAlignment): string;
+function TextLayoutToCSSVerticalAlign(aLayout: TTextLayout): string;
 
-function IdentEntry(Entry: Longint; out MapEntry: TIdentMapEntry): boolean;
-function ColorToIdent(Color: Longint; out Ident: String): Boolean;
-function IdentToColor(const Ident: string; out Color: Longint): Boolean;
-function ColorIndex(Color: Longint; out Index: Integer): Boolean;
+function IdentEntry(Entry: longint; out MapEntry: TIdentMapEntry): boolean;
+function ColorToIdent(Color: longint; out Ident: string): boolean;
+function IdentToColor(const Ident: string; out Color: longint): boolean;
+function ColorIndex(Color: longint; out Index: integer): boolean;
 
 implementation
 
-function JSColor(const AColor: TColor): string;
+function JSColor(const AColor: TColor; AAlpha: byte): string;
 var
-  R, G, B: byte;
+  R, G, B, A: byte;
 begin
+  A := AAlpha;
   case AColor of
     //// System colors
     clScrollBar: Result := 'Scrollbar';
@@ -328,7 +329,7 @@ begin
       R := (AColor) and $FF;
       G := (AColor shr 8) and $FF;
       B := (AColor shr 16) and $FF;
-      Result := '#' + IntToHex(R, 2) + IntToHex(G, 2) + IntToHex(B, 2);
+      Result := '#' + IntToHex(R, 2) + IntToHex(G, 2) + IntToHex(B, 2) + IntToHex(A, 2);
     end;
   end;
 end;
@@ -350,7 +351,7 @@ begin
   end;
 end;
 
-function JSMeasureText(const AText: string; const AFontName: string;  const AFontSize: NativeInt; const AFixedWidth: NativeInt): TSize;
+function JSMeasureText(const AText: string; const AFontName: string; const AFontSize: nativeint; const AFixedWidth: nativeint): TSize;
 var
   VDiv: TJSHTMLElement;
 begin
@@ -383,10 +384,10 @@ end;
 
 { TFont }
 
-function TFont.GetHeight: NativeInt;
-begin                            
+function TFont.GetHeight: nativeint;
+begin
   /// https://stackoverflow.com/questions/139655/convert-pixels-to-points
-  Result := Round((- FSize * 72) / 96);
+  Result := Round((-FSize * 72) / 96);
 end;
 
 procedure TFont.SetCharSet(AValue: TFontCharSet);
@@ -407,10 +408,10 @@ begin
   end;
 end;
 
-procedure TFont.SetHeight(AValue: NativeInt);
+procedure TFont.SetHeight(AValue: nativeint);
 begin
   /// https://stackoverflow.com/questions/139655/convert-pixels-to-points
-  SetSize(Round((- AValue * 96) / 72));
+  SetSize(Round((-AValue * 96) / 72));
 end;
 
 procedure TFont.SetName(AValue: string);
@@ -422,7 +423,7 @@ begin
   end;
 end;
 
-procedure TFont.SetSize(AValue: NativeInt);
+procedure TFont.SetSize(AValue: nativeint);
 begin
   if (FSize <> AValue) then
   begin
@@ -503,10 +504,7 @@ function TFont.IsEqual(AFont: TFont): boolean;
 begin
   if (Assigned(AFont)) then
   begin
-    if (FCharSet <> AFont.CharSet) or
-      (FColor <> AFont.Color) or
-      (FName <> AFont.Name) or
-      (FSize <> AFont.Size) or
+    if (FCharSet <> AFont.CharSet) or (FColor <> AFont.Color) or (FName <> AFont.Name) or (FSize <> AFont.Size) or
       (FStyle <> AFont.Style) then
     begin
       Result := False;
@@ -527,7 +525,7 @@ begin
   Result := JSMeasureText(AText, FName, FSize);
 end;
 
-procedure TFont.TextSize(const AText: string; var W, H: NativeInt);
+procedure TFont.TextSize(const AText: string; var W, H: nativeint);
 var
   VSize: TSize;
 begin
@@ -536,12 +534,12 @@ begin
   W := VSize.Cx;
 end;
 
-function TFont.TextHeight(const AText: string): NativeInt;
+function TFont.TextHeight(const AText: string): nativeint;
 begin
   Result := TextExtent(AText).Cy;
 end;
 
-function TFont.TextWidth(const AText: string): NativeInt;
+function TFont.TextWidth(const AText: string): nativeint;
 begin
   Result := TextExtent(AText).Cx;
 end;
@@ -566,7 +564,7 @@ begin
   end;
 end;
 
-procedure TPen.SetWidth(AValue: NativeInt);
+procedure TPen.SetWidth(AValue: nativeint);
 begin
   if (FWidth <> AValue) then
   begin
@@ -797,11 +795,11 @@ end;
 procedure TCanvas.PrepareStyle;
 begin
   /// Specifies the color or style to use inside shapes
-  FContextElement.FillStyle := JSColor(FBrush.Color);
+  FContextElement.FillStyle := JSColor(FBrush.Color, 255);
   /// Sets the thickness of lines in space units
   FContextElement.LineWidth := FPen.Width;
   /// Specifies the color or style to use for the lines around shapes.
-  FContextElement.StrokeStyleAsColor := JSColor(FPen.Color);
+  FContextElement.StrokeStyleAsColor := JSColor(FPen.Color, 255);
   /// Sets the line dash pattern used when stroking lines
   case FPen.Style of
     psDash: FContextElement.SetLineDash([8, 2]);
@@ -817,7 +815,7 @@ begin
   /// Specifies the current text style being used when drawing text
   FContextElement.Font := JSFont(FFont);
   /// Specifies the color or style to use inside shapes
-  FContextElement.FillStyle := JSColor(FFont.Color);
+  FContextElement.FillStyle := JSColor(FFont.Color, 255);
   /// Specifies the current text baseline being used when drawing text => "top"||"hanging"||"middle"||"alphabetic"||"ideographic"||"bottom"
   FContextElement.TextBaseline := 'hanging';
 end;
@@ -948,12 +946,12 @@ begin
   Result := JSMeasureText(AText, FFont.Name, FFont.Size);
 end;
 
-function TCanvas.TextHeight(const AText: string): NativeInt;
+function TCanvas.TextHeight(const AText: string): nativeint;
 begin
   Result := TextExtent(AText).Cy;
 end;
 
-function TCanvas.TextWidth(const AText: string): NativeInt;
+function TCanvas.TextWidth(const AText: string): nativeint;
 begin
   Result := TextExtent(AText).Cx;
 end;
@@ -1025,7 +1023,7 @@ const
     //(Value: clForm; Name: 'clForm')
     );
 
-function PenStyleToCSSBorderStyle(aStyle: TPenStyle): String;
+function PenStyleToCSSBorderStyle(aStyle: TPenStyle): string;
 begin
   case aStyle of
     psSolid:
@@ -1045,7 +1043,7 @@ begin
   end;
 end;
 
-function AlignmentToCSSAlignment(aAlignment: TAlignment): String;
+function AlignmentToCSSAlignment(aAlignment: TAlignment): string;
 begin
   case aAlignment of
     taLeftJustify:
@@ -1057,7 +1055,7 @@ begin
   end;
 end;
 
-function TextLayoutToCSSVerticalAlign(aLayout: TTextLayout): String;
+function TextLayoutToCSSVerticalAlign(aLayout: TTextLayout): string;
 begin
   case aLayout of
     tlTop:
@@ -1069,7 +1067,7 @@ begin
   end;
 end;
 
-function IdentEntry(Entry: Longint; out MapEntry: TIdentMapEntry): boolean;
+function IdentEntry(Entry: longint; out MapEntry: TIdentMapEntry): boolean;
 begin
   Result := False;
   if (Entry >= 0) and (Entry <= High(Colors)) then
@@ -1079,17 +1077,17 @@ begin
   end;
 end;
 
-function ColorToIdent(Color: Longint; out Ident: String): Boolean;
+function ColorToIdent(Color: longint; out Ident: string): boolean;
 begin
   Result := IntToIdent(Color, Ident, Colors);
 end;
 
-function IdentToColor(const Ident: string; out Color: Longint): Boolean;
+function IdentToColor(const Ident: string; out Color: longint): boolean;
 begin
   Result := IdentToInt(Ident, Color, Colors);
 end;
 
-function ColorIndex(Color: Longint; out Index: Integer): Boolean;
+function ColorIndex(Color: longint; out Index: integer): boolean;
 var
   i: integer;
 begin
@@ -1106,4 +1104,3 @@ end;
 initialization
   RegisterIntegerConsts(TypeInfo(TColor), TIdentToInt(@IdentToColor), TIntToIdent(@ColorToIdent));
 end.
-

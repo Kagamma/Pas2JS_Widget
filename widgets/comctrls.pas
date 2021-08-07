@@ -475,7 +475,7 @@ begin
     /// Color
     Style.SetProperty('background-color', '#dddada');
     /// Font   
-    Style.SetProperty('color', JSColor(Font.Color));
+    Style.SetProperty('color', JSColor(Font.Color, Alpha));
     Style.SetProperty('font', JSFont(Font));
     /// Focus highlight
     Style.SetProperty('outline', 'none');
