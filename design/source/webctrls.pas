@@ -542,10 +542,12 @@ type
     FAlpha: byte;
     FHandleClass: string;
     FHandleId: string;
+  public
+    constructor Create(TheOwner: TComponent); override;
   published
     property Align;
     property Alignment;
-    property Alpha: byte read FAlpha write FAlpha;
+    property Alpha: byte read FAlpha write FAlpha default 255;
     property Anchors;
     property AutoSize;
     property BevelColor;
@@ -990,6 +992,14 @@ begin
     TWStringGrid,
     TWWebSocketClient
     ]);
+end;
+
+{ TWPanel }
+
+constructor TWPanel.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Alpha := 255;
 end;
 
 { TWRadioButton }
