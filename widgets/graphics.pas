@@ -277,7 +277,8 @@ const
   ffSans = '"Arial Narrow", Arial, "Helvetica Condensed", Helvetica, sans-serif';
   ffTimes = '"Times New Roman", Times, serif';
 
-function JSColor(const AColor: TColor; AAlpha: byte): string;
+function JSColor(const AColor: TColor; AAlpha: byte): string; overload;
+function JSColor(const AColor: TColor): string; overload;
 function JSFont(const AFont: TFont): string;
 function JSMeasureText(const AText: string; const AFontName: string; const AFontSize: nativeint; const AFixedWidth: nativeint = 0): TSize; overload;
 
@@ -332,6 +333,11 @@ begin
       Result := '#' + IntToHex(R, 2) + IntToHex(G, 2) + IntToHex(B, 2) + IntToHex(A, 2);
     end;
   end;
+end;
+
+function JSColor(const AColor: TColor): string;
+begin
+  JSColor(AColor, 255);
 end;
 
 function JSFont(const AFont: TFont): string;

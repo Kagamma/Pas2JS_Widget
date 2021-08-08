@@ -1489,7 +1489,7 @@ procedure TCustomGrid.Changed;
 
     if (fSelectedColor <> clNone) and GetIsCellSelected(aCol, aRow) and
        (aCol >= fFixedCols) and (aRow >= fFixedRows) then
-      content.style.setProperty('background-color', JSColor(fSelectedColor))
+      content.style.setProperty('background-color', JSColor(fSelectedColor, 255))
     else
       content.style.removeProperty('background-color');
 
@@ -1510,7 +1510,7 @@ procedure TCustomGrid.Changed;
       style.RemoveProperty('border-bottom-style');
     style.SetProperty('border-width', IntToStr(fGridLineWidth) + 'px');
 
-    style.SetProperty('border-color', JSColor(fGridLineColor));
+    style.SetProperty('border-color', JSColor(fGridLineColor, 255));
   end;
 
   procedure UpdateFixedCell(aCell: TJSHTMLTableDataCellElement; aCol, aRow: LongInt; aColumn: TGridColumn; aIsLastCol, aIsLastRow: Boolean);
