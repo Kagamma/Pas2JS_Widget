@@ -43,7 +43,7 @@ MIT:
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 }"/>
-    <Version Minor="1" Release="1" Build="2"/>
+    <Version Minor="1" Release="2" Build="3"/>
     <Files Count="7">
       <Item1>
         <Filename Value="../source/btnctrls.pas"/>
