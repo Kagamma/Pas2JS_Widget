@@ -243,6 +243,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property Alpha;
     property BorderSpacing;
     property Caption;
     property Color;

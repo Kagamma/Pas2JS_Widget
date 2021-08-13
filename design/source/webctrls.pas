@@ -327,12 +327,14 @@ type
 
   TWButton = class(TCustomButton)
   private
+    FAlpha: byte;
     FHandleClass: string;
     FHandleId: string;
   published
     property Align;
     property Anchors;
     property AutoSize;
+    property Alpha: byte read FAlpha write FAlpha default 255;
     property BorderSpacing;
     property Caption;
     property Color;
@@ -361,6 +363,8 @@ type
     property OnMouseUp;
     property OnMouseWheel;
     property OnResize;
+  public
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   { TWCheckbox }
@@ -992,6 +996,14 @@ begin
     TWStringGrid,
     TWWebSocketClient
     ]);
+end;
+
+{ TWButton }
+
+constructor TWButton.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Alpha := 255;
 end;
 
 { TWPanel }
