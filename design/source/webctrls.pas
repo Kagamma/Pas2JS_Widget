@@ -31,6 +31,7 @@ uses
   Classes,
   SysUtils,{%H-}
   LResources,
+  LCLType,
   Graphics,
   Controls,
   Forms,
@@ -42,7 +43,8 @@ uses
   BtnCtrls,
   DataGrid,
   CustomTimer,
-  Grids;
+  Grids,
+  websocket;
 
 type
 
@@ -325,12 +327,14 @@ type
 
   TWButton = class(TCustomButton)
   private
+    FAlpha: byte;
     FHandleClass: string;
     FHandleId: string;
   published
     property Align;
     property Anchors;
     property AutoSize;
+    property Alpha: byte read FAlpha write FAlpha default 255;
     property BorderSpacing;
     property Caption;
     property Color;
@@ -359,6 +363,8 @@ type
     property OnMouseUp;
     property OnMouseWheel;
     property OnResize;
+  public
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   { TWCheckbox }
@@ -403,6 +409,58 @@ type
     property OnMouseUp;
     property OnMouseWheel;
     property OnResize;
+  end;
+
+  { TWRadioButton }
+
+  TWRadioButton = class(TCustomCheckBox)
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+  published
+    property Align;
+    property Alignment;
+    property Anchors;
+    property AutoSize default True;
+    property BidiMode;
+    property BorderSpacing;
+    property Caption;
+    property Checked;
+    property Color;
+    property Constraints;
+    property DoubleBuffered;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property Hint;
+    property OnChange;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnResize;
+    property OnStartDrag;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
   end;
 
   { TWLabel }
@@ -485,11 +543,15 @@ type
 
   TWPanel = class(TCustomPanel)
   private
+    FAlpha: byte;
     FHandleClass: string;
     FHandleId: string;
+  public
+    constructor Create(TheOwner: TComponent); override;
   published
     property Align;
     property Alignment;
+    property Alpha: byte read FAlpha write FAlpha default 255;
     property Anchors;
     property AutoSize;
     property BevelColor;
@@ -536,6 +598,18 @@ type
     property OnTimer;
     property OnStartTimer;
     property OnStopTimer;
+  end;
+
+  { TWWebSocketClient }
+
+  TWWebSocketClient = class(TCustomWebSocketClient)
+  published
+    property Url;
+    property OnBinaryMessage;
+    property OnClose;
+    property OnError;
+    property OnMessage;
+    property OnOpen;
   end;
 
   { TWPageControl }
@@ -915,6 +989,7 @@ begin
     TWMemo,
     TWButton,
     TWCheckbox,
+    TWRadioButton,
     TWLabel,
     TWImage,
     TWPanel,
@@ -928,8 +1003,39 @@ begin
     TWDataGrid,
     TWPagination,
     TWStringGrid,
-    TWSplitter
+    TWSplitter,
+    TWWebSocketClient
     ]);
+end;
+
+{ TWButton }
+
+constructor TWButton.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Alpha := 255;
+end;
+
+{ TWPanel }
+
+constructor TWPanel.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Alpha := 255;
+end;
+
+{ TWRadioButton }
+
+procedure TWRadioButton.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := (Params.Style and not BS_3STATE) or BS_RADIOBUTTON;
+end;
+
+constructor TWRadioButton.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  AutoSize := True;
 end;
 
 { TWStringGrid }

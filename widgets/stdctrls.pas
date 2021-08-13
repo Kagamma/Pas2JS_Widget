@@ -219,7 +219,6 @@ type
   { TCustomMemo }
 
   TCustomMemo = class(TWinControl)
-    { TODO: WantTabs not work }
   private
     FAlignment: TAlignment;
     FCharCase: TEditCharCase;
@@ -237,6 +236,7 @@ type
     function GetSelLength: NativeInt;
     function GetSelStart: NativeInt;
     function GetSelText: string;
+    procedure HandleLinesChange(aSender: TObject);
     procedure SetAlignment(AValue: TAlignment);
     procedure SetCharCase(AValue: TEditCharCase);
     procedure SetLines(AValue: TStrings);
@@ -354,6 +354,27 @@ type
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
   end;
 
+  { TCustomRadioButton }
+
+  TCustomRadioButton = class(TWinControl)
+  private
+    fInput: TJSHTMLInputElement;
+    fLabel: TJSHTMLLabelElement;
+    FOnChange: TNotifyEvent;
+    function ChangeHandler(Event: TEventListenerEvent): boolean;
+    function GetChecked: boolean;
+    function LabelClickHandler(aEvent: TJSMouseEvent): boolean;
+    procedure SetChecked(AValue: boolean);
+  protected
+    property Checked: boolean read GetChecked write SetChecked;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  protected
+    procedure Changed; override;
+    function CreateHandleElement: TJSHTMLElement; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
   { TCustomLabel }
 
   TCustomLabel = class(TWinControl)
@@ -437,6 +458,71 @@ begin
       aStyle.setProperty('overflow', 'auto');
     end;
   end;
+end;
+
+{ TCustomRadioButton }
+
+function TCustomRadioButton.ChangeHandler(Event: TEventListenerEvent): boolean;
+begin
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+function TCustomRadioButton.GetChecked: boolean;
+begin
+  Result := fInput.checked;
+end;
+
+function TCustomRadioButton.LabelClickHandler(aEvent: TJSMouseEvent): boolean;
+begin
+  if not Checked then
+    Checked := true;
+end;
+
+procedure TCustomRadioButton.SetChecked(AValue: boolean);
+begin
+  if AValue = fInput.checked then
+    Exit;
+  fInput.checked := AValue;
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
+procedure TCustomRadioButton.Changed;
+begin
+  inherited Changed;
+  HandleElement.style.setProperty('display','flex' );
+  HandleElement.style.setProperty('align-items', 'center');
+  HandleElement.style.setProperty('white-space', 'nowrap');
+  if AutoSize then begin
+    HandleElement.Style.removeProperty('height');
+    HandleElement.Style.removeProperty('width');
+  end;
+  fInput._type := 'radio';
+  fInput.id := Name;
+  fInput.name := Parent.Name;
+  fInput.value := Caption;
+  fLabel.textContent := Caption;
+  { #todo -oyus : After publish this fix to release https://bugs.freepascal.org/view.php?id=38862. Need refactoring }
+  // fLabel.htmlFor := Name;
+  fLabel.onclick := @LabelClickHandler;
+end;
+
+function TCustomRadioButton.CreateHandleElement: TJSHTMLElement;
+begin
+  Result := TJSHTMLElement(Document.CreateElement('div'));
+  fInput := TJSHTMLInputElement(document.createElement('input'));
+  fLabel := TJSHTMLLabelElement(document.createElement('label'));
+  Result.append(fInput);
+  fInput.onselect := @ChangeHandler;
+  fInput.addEventListener('change', @ChangeHandler);
+  Result.append(fLabel);
+end;
+
+constructor TCustomRadioButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  AutoSize := True;
 end;
 
 { TCustomComboBox }
@@ -791,6 +877,7 @@ begin
       FSelectionChanged := False;
     end;
     with TJSHTMLSelectElement(HandleElement) do begin
+      Style.SetProperty('overflow', 'auto');
       multiple := FMultiSelect;
       { use 2, so that it isn't shown as a dropdown }
       size := 2;
@@ -1388,6 +1475,11 @@ begin
   Result := Copy(RealGetText, FSelStart + 1, FSelLength);
 end;
 
+procedure TCustomMemo.HandleLinesChange(aSender: TObject);
+begin
+  Changed;
+end;
+
 procedure TCustomMemo.SetCharCase(AValue: TEditCharCase);
 begin
   if (FCharCase <> AValue) then
@@ -1522,10 +1614,21 @@ begin
 end;
 
 procedure TCustomMemo.KeyDown(var Key: NativeInt; Shift: TShiftState);
+var
+  StartPos: NativeInt;
+  NewText: String;
 begin
   inherited KeyDown(Key, Shift);
   if (not FWantReturns) and (Key = 13) then
   begin
+    Key := 0;
+  end;
+  if (FWantTabs) and (Key = 9) then begin
+    StartPos := TJSHTMLTextAreaElement(HandleElement).selectionStart;
+    NewText := Text;
+    System.Insert(#9, NewText, StartPos + 1);
+    Text := NewText;
+    TJSHTMLTextAreaElement(HandleElement).selectionEnd := StartPos + 1;
     Key := 0;
   end;
 end;
@@ -1662,6 +1765,7 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLines := TCustomMemoStrings.Create;
+  TCustomMemoStrings(FLines).OnChange := HandleLinesChange;
   FMaxLength := 0;
   FModified := False;
   FReadOnly := False;
@@ -1875,6 +1979,7 @@ begin
   begin
     with HandleElement do
     begin
+      Style.setProperty('white-space', 'nowrap');
       /// Prevent text selection
       Style.SetProperty('user-select', 'none');
       Style.SetProperty('-moz-user-select', 'none');
@@ -1884,6 +1989,10 @@ begin
       /// Position
       Style.SetProperty('display', 'flex');
       Style.SetProperty('align-items', 'center');
+      if AutoSize then begin
+        Style.removeProperty('height');
+        Style.removeProperty('width');
+      end;
     end;
     /// Mark
     with FMarkElement do
@@ -2031,18 +2140,19 @@ begin
         Style.removeProperty('height');
         Style.removeProperty('width');
       end;
-    end;
-    with FContentElement do
-    begin
-      /// Clear
-      InnerHTML := '';
       /// Aligment
       case FAlignment of
         taCenter: Style.SetProperty('text-align', 'center');
         taLeftJustify: Style.SetProperty('text-align', 'left');
         taRightJustify: Style.SetProperty('text-align', 'right');
       end;
+    end;
+    with FContentElement do
+    begin
+      /// Clear
+      InnerHTML := '';
       /// Layout
+      Style.SetProperty('display', 'table-cell');
       case FLayout of
         tlBottom: Style.SetProperty('vertical-align', 'bottom');
         tlCenter: Style.SetProperty('vertical-align', 'middle');
@@ -2052,9 +2162,11 @@ begin
       if (FWordWrap) then
       begin
         Style.SetProperty('word-wrap', 'break-word');
+        Style.removeProperty('white-space');
       end
       else
       begin
+        Style.setProperty('white-space', 'nowrap');
         Style.removeProperty('word-wrap');
       end;
       /// Scroll

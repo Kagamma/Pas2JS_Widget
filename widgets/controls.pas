@@ -196,6 +196,7 @@ type
   TControl = class(TComponent)
   private
     FAlign: TAlign;
+    FAlpha: byte;
     FAnchors: TAnchors;
     FAutoSize: boolean;
     FBorderSpacing: TControlBorderSpacing;
@@ -344,6 +345,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: NativeInt); virtual;
   public
     property Align: TAlign read FAlign write SetAlign;
+    property Alpha: byte read FAlpha write FAlpha;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
@@ -1404,14 +1406,24 @@ end;
 
 function TControl.HandleClick(AEvent: TJSMouseEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   Click();
   Result := True;
 end;
 
 function TControl.HandleDblClick(AEvent: TJSMouseEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   DblClick();
   Result := True;
 end;
@@ -1423,30 +1435,41 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
-  begin
-    VButton := ExtractMouseButton(AEvent);
-    VOffSets := OffSets(FHandleElement);
-    VShift := ExtractShiftState(AEvent);
-    X := Trunc(AEvent.ClientX - VOffSets.Left);
-    Y := Trunc(AEvent.ClientY - VOffSets.Top);
-  //  AEvent.stopImmediatePropagation;
-  //  AEvent.StopPropagation;
-    MouseDown(VButton, VShift, X, Y);
-  end;
-  Result := true;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
+  VButton := ExtractMouseButton(AEvent);
+  VOffSets := OffSets(FHandleElement);
+  VShift := ExtractShiftState(AEvent);
+  X := Trunc(AEvent.ClientX - VOffSets.Left);
+  Y := Trunc(AEvent.ClientY - VOffSets.Top);
+  MouseDown(VButton, VShift, X, Y);
+  Result := True;
 end;
 
 function TControl.HandleMouseEnter(AEvent: TJSMouseEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   MouseEnter();
   Result := True;
 end;
 
 function TControl.HandleMouseLeave(AEvent: TJSMouseEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   MouseLeave();
   Result := True;
 end;
@@ -1457,16 +1480,18 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
-  begin
-    VOffSets := OffSets(FHandleElement);
-    VShift := ExtractShiftState(AEvent);
-    X := Trunc(AEvent.ClientX - VOffSets.Left);
-    Y := Trunc(AEvent.ClientY - VOffSets.Top);
-//    AEvent.StopPropagation;
-    MouseMove(VShift, X, Y);
-  end;
-  Result := true;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
+  VOffSets := OffSets(FHandleElement);
+  VShift := ExtractShiftState(AEvent);
+  X := Trunc(AEvent.ClientX - VOffSets.Left);
+  Y := Trunc(AEvent.ClientY - VOffSets.Top);
+  MouseMove(VShift, X, Y);
+  Result := True;
 end;
 
 function TControl.HandleMouseUp(AEvent: TJSMouseEvent): boolean;
@@ -1476,16 +1501,18 @@ var
   VShift: TShiftState;
   X, Y: NativeInt;
 begin
-  if TJSHTMLElement(AEvent.targetElement) = FHandleElement then
-  begin
-    VButton := ExtractMouseButton(AEvent);
-    VOffSets := OffSets(FHandleElement);
-    VShift := ExtractShiftState(AEvent);
-    X := Trunc(AEvent.ClientX - VOffSets.Left);
-    Y := Trunc(AEvent.ClientY - VOffSets.Top);
-    //AEvent.StopPropagation;
-    MouseUp(VButton, VShift, X, Y);
-  end;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
+  VButton := ExtractMouseButton(AEvent);
+  VOffSets := OffSets(FHandleElement);
+  VShift := ExtractShiftState(AEvent);
+  X := Trunc(AEvent.ClientX - VOffSets.Left);
+  Y := Trunc(AEvent.ClientY - VOffSets.Top);
+  MouseUp(VButton, VShift, X, Y);
   Result := True;
 end;
 
@@ -1497,26 +1524,41 @@ var
   VShift: TShiftState;
   VOffSets: TRect;
 begin
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   VDelta := Trunc(-AEvent.deltaY);
   VHandled := False;
   VOffSets := OffSets(FHandleElement);
   VMousePos := Point(VOffSets.Left, VOffSets.Top);
   VShift := ExtractShiftState(AEvent);
-  AEvent.StopPropagation;
   MouseWeel(VShift, VDelta, VMousePos, VHandled);
   Result := True;
 end;
 
 function TControl.HandleResize(AEvent: TJSEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   DoResize();
   Result := True;
 end;
 
 function TControl.HandleScroll(AEvent: TJSEvent): boolean;
 begin
-  AEvent.StopPropagation;
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
   DoScroll();
   Result := True;
 end;
@@ -1584,7 +1626,7 @@ begin
       if (FHandleClass = '') and (FHandleId = '') then
       begin      
         /// Font
-        Style.SetProperty('color', JSColor(FFont.Color));
+        Style.SetProperty('color', JSColor(FFont.Color, Alpha));
         UpdateHtmlElementFont(FHandleElement, FFont, False);
         /// Color
         if (FColor in [clDefault, clNone]) then
@@ -1593,7 +1635,7 @@ begin
         end
         else
         begin
-          Style.SetProperty('background-color', JSColor(FColor));
+          Style.SetProperty('background-color', JSColor(FColor, Alpha));
         end;
       end;
 
@@ -2119,6 +2161,7 @@ begin
   FFont := TFont.Create;
   FFont.OnChange := @FontChanged;
   FAlign := alNone;
+  FAlpha := 255;
   FAnchors := [akLeft, akTop];
   FAutoSize := False;
   FCaption := '';
