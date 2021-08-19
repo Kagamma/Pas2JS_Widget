@@ -44,7 +44,8 @@ uses
   DataGrid,
   CustomTimer,
   Grids,
-  websocket;
+  websocket,
+  Menus;
 
 type
 
@@ -70,6 +71,7 @@ type
     property HandleClass: string read FHandleClass write FHandleClass;
     property HandleId: string read FHandleId write FHandleId;
     property KeyPreview;
+    property PopupMenu;
     property ShowHint;
     property Visible;
     property OnActivate;
@@ -570,6 +572,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -966,12 +969,31 @@ type
     property OnSelection;
   end;
 
+  { TWSplitter }
+
   TWSplitter = class(TCustomSplitter)
   published
     property Align default alNone;
     property Color;
     property Visible;
     property Width;
+  end;
+
+  { TWPopupMenu }
+
+  TWPopupMenu = class(TPopupMenu)
+  private
+    FAlignment: TPopupAlignment;
+    FAutoPopup: Boolean;
+    FOnClose: TNotifyEvent;
+    FOnPopup: TNotifyEvent;
+    FTrackButton: TTrackButton;
+  published
+    property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;
+    property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
+    property TrackButton: TTrackButton read FTrackButton write FTrackButton default tbRightButton;
+    property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
 
@@ -983,6 +1005,7 @@ procedure Register;
 begin
   {$I webctrls.lrs}
   RegisterComponents('WCL', [
+    TWPopupMenu,
     TWComboBox,
     TWListBox,
     TWEdit,

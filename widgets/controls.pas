@@ -110,6 +110,7 @@ type
   TWinControlClass = class of TWinControl;
   TControl = class;
   TControlClass = class of TControl;
+  TCustomPopupMenu = class;
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
@@ -219,6 +220,7 @@ type
     FParentColor: boolean;
     FParentFont: boolean;
     FParentShowHint: boolean;
+    FPopupMenu: TCustomPopupMenu;
     FShowHint: boolean;
     FTabOrder: NativeInt;
     FTabStop: boolean;
@@ -262,6 +264,7 @@ type
     procedure SetParentColor(AValue: boolean);
     procedure SetParentFont(AValue: boolean);
     procedure SetParentShowHint(AValue: boolean);
+    procedure SetPopupMenu(AValue: TCustomPopupMenu);
     procedure SetShowHint(AValue: boolean);
     procedure SetTabOrder(AValue: NativeInt);
     procedure SetTabStop(AValue: boolean);
@@ -297,6 +300,7 @@ type
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
   protected
     function HandleClick(AEvent: TJSMouseEvent): boolean; virtual;
+    function HandleContextMenu(AEvent: TJSMouseEvent): boolean; virtual;
     function HandleDblClick(AEvent: TJSMouseEvent): boolean; virtual;
     function HandleMouseDown(AEvent: TJSMouseEvent): boolean; virtual;
     function HandleMouseEnter(AEvent: TJSMouseEvent): boolean; virtual;
@@ -364,6 +368,7 @@ type
     property ParentColor: boolean read FParentColor write SetParentColor;
     property ParentFont: boolean read FParentFont write SetParentFont;
     property ParentShowHint: boolean read FParentShowHint write SetParentShowHint;
+    property PopupMenu: TCustomPopupMenu read FPopupMenu write SetPopupMenu;
     property ShowHint: boolean read FShowHint write SetShowHint;
     property Visible: boolean read FVisible write SetVisible;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -421,6 +426,34 @@ type
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
   end;
+
+  { TCustomPopupMenu }
+
+  TCustomPopupMenu = class(TWinControl)
+  protected
+    function CreateHandleElement: TJSHTMLElement; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Popup; overload;
+    procedure Popup(Ax, Ay: Integer); overload;
+    procedure Hide;
+  end;
+
+  { TCustomMenuItem }
+
+  TCustomMenuItem = class(TWinControl)
+  private
+    procedure OnMenuClick(Sender: TObject);
+    procedure OnMenuMouseEnter(Sender: TObject);
+    procedure OnMenuMouseLeave(Sender: TObject);
+  protected
+    procedure Click; override;
+    procedure Changed; override;
+    function CreateHandleElement: TJSHTMLElement; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
 
   { TCustomControl }
 
@@ -869,6 +902,90 @@ begin
   end;
 end;
 
+{ TCustomMenuItem }
+
+procedure TCustomMenuItem.OnMenuClick(Sender: TObject);
+begin
+  inherited OnClick;
+end;
+
+procedure TCustomMenuItem.OnMenuMouseEnter(Sender: TObject);
+begin
+  inherited OnMouseEnter;
+  HandleElement.style.setProperty('background-color', '#ddd');
+end;
+
+procedure TCustomMenuItem.OnMenuMouseLeave(Sender: TObject);
+begin
+  inherited OnMouseLeave;
+  HandleElement.style.setProperty('background-color', '#f1f1f1');
+end;
+
+procedure TCustomMenuItem.Click;
+begin
+  inherited Click;
+  Parent.Visible := False;
+end;
+
+procedure TCustomMenuItem.Changed;
+begin
+  inherited Changed;
+  HandleElement.style.setProperty('padding', '6px 16px');
+  HandleElement.style.setProperty('background-color', '#f1f1f1');
+  HandleElement.innerHTML := Caption;
+end;
+
+function TCustomMenuItem.CreateHandleElement: TJSHTMLElement;
+begin
+  Result := TJSHTMLElement(Document.CreateElement('div'));
+end;
+
+constructor TCustomMenuItem.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetBounds(0, 0, 200, 20);
+  OnMouseEnter := @OnMenuMouseEnter;
+  OnMouseLeave := @OnMenuMouseLeave;
+  OnClick := @OnMenuClick;
+end;
+
+{ TCustomPopupMenu }
+
+function TCustomPopupMenu.CreateHandleElement: TJSHTMLElement;
+begin
+  Result := TJSHTMLElement(Document.CreateElement('div'));
+end;
+
+constructor TCustomPopupMenu.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+procedure TCustomPopupMenu.Popup;
+begin
+  Popup(0,0);
+end;
+
+procedure TCustomPopupMenu.Popup(Ax, Ay: Integer);
+var
+  i: Integer;
+begin
+  HandleElement.style.setProperty('background-color', '#f1f1f1');
+  HandleElement.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
+  HandleElement.style.setProperty('z-index', '1');
+  for i:=0 to ControlCount - 1 do
+  begin
+    Controls[i].SetBounds(0, 27 * i, 200, 27);
+  end;
+  SetBounds(Ax, Ay, 200, (ControlCount) * 27);
+  Visible := True;
+end;
+
+procedure TCustomPopupMenu.Hide;
+begin
+  Visible := False;
+end;
+
 { TControlCanvas }
 
 procedure TControlCanvas.SetHeight(AValue: NativeInt);
@@ -1269,6 +1386,12 @@ begin
   end;
 end;
 
+procedure TControl.SetPopupMenu(AValue: TCustomPopupMenu);
+begin
+  if FPopupMenu=AValue then Exit;
+  FPopupMenu:=AValue;
+end;
+
 procedure TControl.SetShowHint(AValue: boolean);
 begin
   if (FShowHint <> AValue) then
@@ -1414,6 +1537,22 @@ begin
       exit;
   Click();
   Result := True;
+end;
+
+function TControl.HandleContextMenu(AEvent: TJSMouseEvent): boolean;
+var
+  VOffSets: TRect;
+  X, Y: NativeInt;
+begin
+  if Assigned(PopupMenu) then
+  begin
+    AEvent.preventDefault;
+    VOffSets := OffSets(FHandleElement);
+    X := Trunc(AEvent.ClientX - VOffSets.Left + Left);
+    Y := Trunc(AEvent.ClientY - VOffSets.Top + Top);
+    PopupMenu.Popup(X, Y);
+  end;
+  Result := true;
 end;
 
 function TControl.HandleDblClick(AEvent: TJSMouseEvent): boolean;
@@ -1727,7 +1866,7 @@ begin
   begin
     AddEventListener('click', @HandleClick);
     AddEventListener('dblclick', @HandleDblClick);
-//    AddEventListener('mousedown', @HandleMouseDown);
+    AddEventListener('mousedown', @HandleMouseDown);
     AddEventListener('mouseenter', @HandleMouseEnter);
     AddEventListener('mouseleave', @HandleMouseLeave);
     AddEventListener('mousemove', @HandleMouseMove);
@@ -1735,6 +1874,7 @@ begin
     AddEventListener('scroll', @HandleScroll);
     AddEventListener('resize', @HandleResize);
     AddEventListener('wheel', @HandleMouseWheel);
+    AddEventListener('contextmenu', @HandleContextMenu);
   end;
 end;
 
@@ -1744,7 +1884,7 @@ begin
   begin
     RemoveEventListener('click', @HandleClick);
     RemoveEventListener('dblclick', @HandleDblClick);
-//    RemoveEventListener('mousedown', @HandleMouseDown);
+    RemoveEventListener('mousedown', @HandleMouseDown);
     RemoveEventListener('mouseenter', @HandleMouseEnter);
     RemoveEventListener('mouseleave', @HandleMouseLeave);
     RemoveEventListener('mousemove', @HandleMouseMove);
@@ -1752,6 +1892,8 @@ begin
     RemoveEventListener('scroll', @HandleScroll);
     RemoveEventListener('resize', @HandleResize);
     RemoveEventListener('wheel', @HandleMouseWheel);
+    RemoveEventListener('contextmenu', @HandleContextMenu);
+
   end;
 end;
 

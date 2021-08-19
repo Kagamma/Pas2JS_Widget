@@ -242,6 +242,7 @@ type
     property HandleClass;
     property HandleID;
     property KeyPreview;
+    property PopupMenu;
     property ShowHint;
     property Visible;
     property OnActivate;

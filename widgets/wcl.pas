@@ -10,7 +10,7 @@ interface
 uses
   WebExtra, MaskUtils, Interfaces, Graphics, Controls, Forms, StdCtrls, 
   ExtCtrls, ComCtrls, NumCtrls, DttCtrls, BtnCtrls, DataGrid, Dialogs, 
-  WebCtrls, WCLStrConsts, WResources, Grids;
+  WebCtrls, WCLStrConsts, WResources, Grids, Menus;
 
 implementation
 

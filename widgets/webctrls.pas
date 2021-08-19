@@ -446,6 +446,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -836,6 +837,27 @@ type
     property Align;
     property Color;
   end;
+
+  { TWPopupMenu }
+
+  TPopupAlignment = (paLeft, paRight, paCenter);
+  TTrackButton = (tbRightButton, tbLeftButton);
+
+  TWPopupMenu = class(TCustomPopupMenu)
+  private
+    FAlignment: TPopupAlignment;
+    FAutoPopup: Boolean;
+    FOnClose: TNotifyEvent;
+    FOnPopup: TNotifyEvent;
+    FTrackButton: TTrackButton;
+  published
+    property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;
+    property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
+    property TrackButton: TTrackButton read FTrackButton write FTrackButton default tbRightButton;
+    property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
+  end;
+
 
 implementation
 
