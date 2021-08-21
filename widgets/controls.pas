@@ -111,6 +111,7 @@ type
   TControl = class;
   TControlClass = class of TControl;
   TCustomPopupMenu = class;
+  TCustomMenuItem = class;
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
@@ -430,28 +431,39 @@ type
   { TCustomPopupMenu }
 
   TCustomPopupMenu = class(TWinControl)
+  private
+    function GetItems(Index: integer): TCustomMenuItem;
   protected
     function CreateHandleElement: TJSHTMLElement; override;
+    procedure Changed; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Popup; overload;
     procedure Popup(Ax, Ay: Integer); overload;
     procedure Hide;
+  public
+    property Items[Index: integer]: TCustomMenuItem read GetItems;
   end;
 
   { TCustomMenuItem }
 
   TCustomMenuItem = class(TWinControl)
   private
-    procedure OnMenuClick(Sender: TObject);
+    FTextElement: TJSHTMLElement;
+    FSubMenu: TJSHTMLElement;
+    function TextClickHandler(aEvent: TJSMouseEvent): boolean;
+  private
+    function GetItems(Index: Integer): TCustomMenuItem;
     procedure OnMenuMouseEnter(Sender: TObject);
     procedure OnMenuMouseLeave(Sender: TObject);
-  protected
     procedure Click; override;
+  protected
     procedure Changed; override;
     function CreateHandleElement: TJSHTMLElement; override;
   public
     constructor Create(AOwner: TComponent); override;
+    property Items[Index: Integer]: TCustomMenuItem read GetItems;
   end;
 
 
@@ -904,40 +916,89 @@ end;
 
 { TCustomMenuItem }
 
-procedure TCustomMenuItem.OnMenuClick(Sender: TObject);
+function TCustomMenuItem.TextClickHandler(aEvent: TJSMouseEvent): boolean;
 begin
-  inherited OnClick;
+  Click;
+end;
+
+function TCustomMenuItem.GetItems(Index: Integer): TCustomMenuItem;
+begin
+  Result := TCustomMenuItem(Controls[Index]);
 end;
 
 procedure TCustomMenuItem.OnMenuMouseEnter(Sender: TObject);
+var
+  i: Integer;
 begin
   inherited OnMouseEnter;
+  for i:=0 to ControlCount - 1 do
+  begin
+    Controls[i].SetBounds(200, 27 * i, 200, 27);
+    Controls[i].Visible := True;
+  end;
   HandleElement.style.setProperty('background-color', '#ddd');
+  FSubMenu.style.setProperty('visibility', 'visible');
 end;
 
 procedure TCustomMenuItem.OnMenuMouseLeave(Sender: TObject);
+var
+  i: Integer;
 begin
   inherited OnMouseLeave;
   HandleElement.style.setProperty('background-color', '#f1f1f1');
+  FSubMenu.style.setProperty('visibility', 'hidden');
+  for i:=0 to ControlCount - 1 do
+    Controls[i].Visible := False;
 end;
 
 procedure TCustomMenuItem.Click;
+var
+  obj: TControl;
 begin
   inherited Click;
-  Parent.Visible := False;
+  obj := Parent;
+  while Assigned(obj) and (not (obj is TCustomPopupMenu))  do
+    obj := obj.Parent;
+  if Assigned(obj) then
+    TCustomPopupMenu(obj).Hide;
 end;
 
 procedure TCustomMenuItem.Changed;
+var
+  i: Integer;
 begin
   inherited Changed;
   HandleElement.style.setProperty('padding', '6px 16px');
   HandleElement.style.setProperty('background-color', '#f1f1f1');
-  HandleElement.innerHTML := Caption;
+  HandleElement.style.setProperty('overflow', '');
+  FTextElement.innerText := Caption;
+  if ControlCount > 0 then
+  begin
+    for i := 0 to ControlCount - 1 do
+    begin
+      FSubMenu.append(controls[i].HandleElement);
+      controls[i].HandleElement.style.setProperty('position', '');
+    end;
+    FSubMenu.style.setProperty('width', '200px');
+    FSubMenu.style.setProperty('height', inttostr(ControlCount*27)+'px');
+    FSubMenu.style.setProperty('left','200px');
+    FSubMenu.style.setProperty('top','0px');
+    FSubMenu.style.setProperty('position','absolute');
+    FSubMenu.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
+    FSubMenu.style.setProperty('box-sizing','border-box');
+    FSubMenu.style.setProperty('z-index', '2');
+  end;
 end;
 
 function TCustomMenuItem.CreateHandleElement: TJSHTMLElement;
 begin
   Result := TJSHTMLElement(Document.CreateElement('div'));
+  FTextElement := TJSHTMLElement(Document.CreateElement('div'));
+  Result.appendChild(FTextElement);
+  FSubMenu := TJSHTMLElement(Document.CreateElement('div'));
+  FSubMenu.style.setProperty('visibility', 'hidden');
+  Result.appendChild(FSubMenu);
+  Visible := False;
 end;
 
 constructor TCustomMenuItem.Create(AOwner: TComponent);
@@ -946,19 +1007,38 @@ begin
   SetBounds(0, 0, 200, 20);
   OnMouseEnter := @OnMenuMouseEnter;
   OnMouseLeave := @OnMenuMouseLeave;
-  OnClick := @OnMenuClick;
+  FTextElement.onclick := @TextClickHandler;
+  Visible := false;
+  Writeln(AOwner.Name);
 end;
 
 { TCustomPopupMenu }
+
+function TCustomPopupMenu.GetItems(Index: integer): TCustomMenuItem;
+begin
+  Result := TCustomMenuItem(Controls[Index]);
+end;
 
 function TCustomPopupMenu.CreateHandleElement: TJSHTMLElement;
 begin
   Result := TJSHTMLElement(Document.CreateElement('div'));
 end;
 
+procedure TCustomPopupMenu.Changed;
+begin
+  inherited Changed;
+  HandleElement.style.setProperty('overflow', '');
+  HandleElement.style.setProperty('position', 'fixed');
+end;
+
 constructor TCustomPopupMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+end;
+
+destructor TCustomPopupMenu.Destroy;
+begin
+  inherited Destroy;
 end;
 
 procedure TCustomPopupMenu.Popup;
@@ -972,10 +1052,12 @@ var
 begin
   HandleElement.style.setProperty('background-color', '#f1f1f1');
   HandleElement.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
+  HandleElement.style.setProperty('overflow', 'auto');
   HandleElement.style.setProperty('z-index', '1');
   for i:=0 to ControlCount - 1 do
   begin
-    Controls[i].SetBounds(0, 27 * i, 200, 27);
+    Controls[i].SetBounds(Parent.Left, 27 * i, 200, 27);
+    Controls[i].Visible := True;
   end;
   SetBounds(Ax, Ay, 200, (ControlCount) * 27);
   Visible := True;
@@ -1544,6 +1626,13 @@ var
   VOffSets: TRect;
   X, Y: NativeInt;
 begin
+  if AEvent.targetElement <> HandleElement then
+    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
+      exit
+    else
+    if AEvent.targetElement.parentElement <> HandleElement then
+      exit;
+
   if Assigned(PopupMenu) then
   begin
     AEvent.preventDefault;
@@ -1608,7 +1697,7 @@ begin
       exit
     else
     if AEvent.targetElement.parentElement <> HandleElement then
-      exit;
+     exit;
   MouseLeave();
   Result := True;
 end;
