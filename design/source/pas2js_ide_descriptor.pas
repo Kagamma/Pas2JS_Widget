@@ -370,7 +370,7 @@ begin
   RegisterProjectFileDescriptor(VPas2JSWDataModule);
 
 {$if declared(TPas2JSWidgetsRequirements)}
-  RegisterComponentRequirements([TWButton, TWCheckbox, TWComboBox, TWDataGrid, TWDateEditBox,
+  RegisterComponentRequirements([TWPopupMenu, TWButton, TWCheckbox, TWComboBox, TWDataGrid, TWDateEditBox,
     TWEdit, TWFileButton, TWFloatEdit, TWImage, TWIntegerEdit, TWLabel, TWMemo, TWPageControl,
     TWPagination, TWPanel, TWRadioButton, TWTimeEditBox, TWStringGrid, TWListBox, TWImage, TWTimer,
     TWDateEditBox, TWWebSocketClient, TWSplitter], TPas2JSWidgetsRequirements);
