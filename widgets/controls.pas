@@ -432,6 +432,7 @@ type
 
   TCustomPopupMenu = class(TWinControl)
   private
+    FOwner: TComponent;
     function GetItems(Index: integer): TCustomMenuItem;
   protected
     function CreateHandleElement: TJSHTMLElement; override;
@@ -1031,6 +1032,7 @@ end;
 constructor TCustomPopupMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOwner := AOwner;
 end;
 
 destructor TCustomPopupMenu.Destroy;
@@ -1047,6 +1049,10 @@ procedure TCustomPopupMenu.Popup(Ax, Ay: Integer);
 var
   i: Integer;
 begin
+  if FOwner is TWinControl then
+    for i := 0 to TWinControl(FOwner).ControlCount - 1 do
+      if TWinControl(FOwner).Controls[i] is TCustomPopupMenu then
+        TWinControl(FOwner).Controls[i].Visible:= false;
   HandleElement.style.setProperty('background-color', '#f1f1f1');
   HandleElement.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
   HandleElement.style.setProperty('overflow', 'auto');

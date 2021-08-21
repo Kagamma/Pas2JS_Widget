@@ -107,6 +107,7 @@ type
     FOnResize: TNotifyEvent;
     FOnScroll: TNotifyEvent;
     FOnShow: TNotifyEvent;
+    function AppClickHandler(aEvent: TJSMouseEvent): boolean;
     procedure SetActiveControl(AValue: TWinControl);
     procedure SetAlphaBlend(AValue: boolean);
     procedure SetAlphaBlendValue(AValue: byte);
@@ -537,6 +538,18 @@ begin
   end;
 end;
 
+function TCustomForm.AppClickHandler(aEvent: TJSMouseEvent): boolean;
+var
+  i: Integer;
+begin
+  writeln('---',ControlCount);
+  for i := 0 to ControlCount - 1 do
+  begin
+    if Controls[i] is TCustomPopupMenu then
+      Controls[i].Visible := false;
+  end;
+end;
+
 procedure TCustomForm.SetAlphaBlend(AValue: boolean);
 begin
   if (FAlphaBlend <> AValue) then
@@ -731,6 +744,7 @@ begin
   if (ClassType <> TWForm) and not (csDesigning in ComponentState) then begin
     ProcessResource;
   end;
+  document.onclick:=@AppClickHandler;
 end;
 
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num: Integer);
