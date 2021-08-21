@@ -442,6 +442,7 @@ type
     procedure Popup; overload;
     procedure Popup(Ax, Ay: Integer); overload;
     procedure Hide;
+    procedure Loaded; override;
   public
     property Items[Index: integer]: TCustomMenuItem read GetItems;
   end;
@@ -932,12 +933,11 @@ var
 begin
   inherited OnMouseEnter;
   for i:=0 to ControlCount - 1 do
-  begin
-    Controls[i].SetBounds(200, 27 * i, 200, 27);
-    Controls[i].Visible := True;
-  end;
-  HandleElement.style.setProperty('background-color', '#ddd');
+    Controls[i].SetBounds(0, 27 * i, 200, 27);
+  FSubMenu.style.setProperty('display', 'block');
   FSubMenu.style.setProperty('visibility', 'visible');
+
+  HandleElement.style.setProperty('background-color', '#ddd');
 end;
 
 procedure TCustomMenuItem.OnMenuMouseLeave(Sender: TObject);
@@ -946,9 +946,8 @@ var
 begin
   inherited OnMouseLeave;
   HandleElement.style.setProperty('background-color', '#f1f1f1');
+  FSubMenu.style.setProperty('display', 'none');
   FSubMenu.style.setProperty('visibility', 'hidden');
-  for i:=0 to ControlCount - 1 do
-    Controls[i].Visible := False;
 end;
 
 procedure TCustomMenuItem.Click;
@@ -972,43 +971,38 @@ begin
   HandleElement.style.setProperty('background-color', '#f1f1f1');
   HandleElement.style.setProperty('overflow', '');
   FTextElement.innerText := Caption;
-  if ControlCount > 0 then
-  begin
-    for i := 0 to ControlCount - 1 do
-    begin
-      FSubMenu.append(controls[i].HandleElement);
-      controls[i].HandleElement.style.setProperty('position', '');
-    end;
-    FSubMenu.style.setProperty('width', '200px');
-    FSubMenu.style.setProperty('height', inttostr(ControlCount*27)+'px');
-    FSubMenu.style.setProperty('left','200px');
-    FSubMenu.style.setProperty('top','0px');
-    FSubMenu.style.setProperty('position','absolute');
-    FSubMenu.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
-    FSubMenu.style.setProperty('box-sizing','border-box');
-    FSubMenu.style.setProperty('z-index', '2');
-  end;
 end;
 
 function TCustomMenuItem.CreateHandleElement: TJSHTMLElement;
 begin
   Result := TJSHTMLElement(Document.CreateElement('div'));
+  Result.style.setProperty('visibility', 'hidden');
+  Result.style.setProperty('display', 'none');
   FTextElement := TJSHTMLElement(Document.CreateElement('div'));
   Result.appendChild(FTextElement);
   FSubMenu := TJSHTMLElement(Document.CreateElement('div'));
   FSubMenu.style.setProperty('visibility', 'hidden');
+  FSubMenu.style.setProperty('display', 'none');
+  FSubMenu.style.setProperty('width', '200px');
+  FSubMenu.style.setProperty('left','200px');
+  FSubMenu.style.setProperty('top','0px');
+  FSubMenu.style.setProperty('position','absolute');
+  FSubMenu.style.setProperty('box-shadow', '0px 8px 16px 0px rgba(0,0,0,0.2)');
+  FSubMenu.style.setProperty('box-sizing','border-box');
+  FSubMenu.style.setProperty('z-index', '2');
+  FSubMenu.className:='QQQ';
   Result.appendChild(FSubMenu);
-  Visible := False;
+  Visible := false;
 end;
 
 constructor TCustomMenuItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  SetBounds(0, 0, 200, 20);
+  SetBounds(0, 0, 200, 27);
   OnMouseEnter := @OnMenuMouseEnter;
   OnMouseLeave := @OnMenuMouseLeave;
   FTextElement.onclick := @TextClickHandler;
-  Visible := false;
+  Visible := true;
   Writeln(AOwner.Name);
 end;
 
@@ -1022,6 +1016,9 @@ end;
 function TCustomPopupMenu.CreateHandleElement: TJSHTMLElement;
 begin
   Result := TJSHTMLElement(Document.CreateElement('div'));
+  Result.style.setProperty('display', 'none');
+  Result.style.setProperty('visibility', 'hidden');
+  Visible := false;
 end;
 
 procedure TCustomPopupMenu.Changed;
@@ -1055,10 +1052,7 @@ begin
   HandleElement.style.setProperty('overflow', 'auto');
   HandleElement.style.setProperty('z-index', '1');
   for i:=0 to ControlCount - 1 do
-  begin
     Controls[i].SetBounds(Parent.Left, 27 * i, 200, 27);
-    Controls[i].Visible := True;
-  end;
   SetBounds(Ax, Ay, 200, (ControlCount) * 27);
   Visible := True;
 end;
@@ -1066,6 +1060,36 @@ end;
 procedure TCustomPopupMenu.Hide;
 begin
   Visible := False;
+end;
+
+procedure TCustomPopupMenu.Loaded;
+var
+  i: Integer;
+  procedure MoveElement(AControl: TWinControl);
+  var
+    j: Integer;
+  begin
+    if AControl is TCustomMenuItem then
+    begin
+      for j := 0 to AControl.ControlCount - 1 do
+      begin
+        TCustomMenuItem(AControl).FSubMenu.append(AControl.Controls[j].HandleElement);
+        AControl.controls[j].HandleElement.style.setProperty('position', '');
+        AControl.controls[j].HandleElement.style.setProperty('left', '0px');
+        if TWinControl(AControl.controls[j]).ControlCount >0 then
+          MoveElement(TWinControl(AControl.controls[j]));
+      end;
+      TCustomMenuItem(AControl).FSubMenu.style.setProperty('height', inttostr(AControl.ControlCount*27)+'px');
+    end;
+  end;
+
+begin
+  inherited Loaded;
+  Writeln('Loaded');
+  hide;
+  writeln(ControlCount);
+  for i := 0 to ControlCount - 1 do
+    MoveElement(TWinControl(Controls[i]));
 end;
 
 { TControlCanvas }
