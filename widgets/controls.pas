@@ -980,6 +980,7 @@ begin
   Result.style.setProperty('visibility', 'hidden');
   Result.style.setProperty('display', 'none');
   FTextElement := TJSHTMLElement(Document.CreateElement('div'));
+  FTextElement.style.setProperty('cursor', 'default');
   Result.appendChild(FTextElement);
   FSubMenu := TJSHTMLElement(Document.CreateElement('div'));
   FSubMenu.style.setProperty('visibility', 'hidden');
