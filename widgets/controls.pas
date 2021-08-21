@@ -1004,7 +1004,6 @@ begin
   OnMouseLeave := @OnMenuMouseLeave;
   FTextElement.onclick := @TextClickHandler;
   Visible := true;
-  Writeln(AOwner.Name);
 end;
 
 { TCustomPopupMenu }
@@ -1091,9 +1090,7 @@ var
 
 begin
   inherited Loaded;
-  Writeln('Loaded');
   hide;
-  writeln(ControlCount);
   for i := 0 to ControlCount - 1 do
     MoveElement(TWinControl(Controls[i]));
 end;

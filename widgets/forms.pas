@@ -542,7 +542,6 @@ function TCustomForm.AppClickHandler(aEvent: TJSMouseEvent): boolean;
 var
   i: Integer;
 begin
-  writeln('---',ControlCount);
   for i := 0 to ControlCount - 1 do
   begin
     if Controls[i] is TCustomPopupMenu then
@@ -744,7 +743,7 @@ begin
   if (ClassType <> TWForm) and not (csDesigning in ComponentState) then begin
     ProcessResource;
   end;
-  document.onclick:=@AppClickHandler;
+  document.addEventListener('click', @AppClickHandler);
 end;
 
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num: Integer);
@@ -780,6 +779,7 @@ destructor TCustomForm.Destroy;
 begin                   
   FActiveControl := nil;
   FChildForm := nil;
+  document.removeEventListener('click', @AppClickHandler);
   inherited Destroy;
 end;
 
