@@ -1048,6 +1048,7 @@ procedure TCustomPopupMenu.Popup(Ax, Ay: Integer);
 var
   i: Integer;
 begin
+  Writeln(Ax, '-', Ay);
   if FOwner is TWinControl then
     for i := 0 to TWinControl(FOwner).ControlCount - 1 do
       if TWinControl(FOwner).Controls[i] is TCustomPopupMenu then
@@ -1659,13 +1660,12 @@ begin
     else
     if AEvent.targetElement.parentElement <> HandleElement then
       exit;
-
   if Assigned(PopupMenu) then
   begin
     AEvent.preventDefault;
     VOffSets := OffSets(FHandleElement);
-    X := Trunc(AEvent.ClientX - VOffSets.Left + Left);
-    Y := Trunc(AEvent.ClientY - VOffSets.Top + Top);
+    X := Trunc(AEvent.x );
+    Y := Trunc(AEvent.y );
     PopupMenu.Popup(X, Y);
   end;
   Result := true;
