@@ -1,0 +1,292 @@
+object WForm1: TWForm1
+  Left = 294
+  Height = 540
+  Top = 173
+  Width = 894
+  AlphaBlend = False
+  AlphaBlendValue = 255
+  Caption = 'MainForm'
+  ClientHeight = 540
+  ClientWidth = 894
+  Color = 3355443
+  OnCreate = FormCreate
+  object WPanel1: TWPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 894
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'WPanel1'
+    ClientHeight = 40
+    ClientWidth = 894
+    Color = 3355443
+    ParentColor = False
+    PopupMenu = WPopupMenu1
+    TabOrder = 0
+    object WButton1: TWButton
+      Left = 8
+      Height = 25
+      Top = 7
+      Width = 75
+      Caption = 'COLOR'
+      Color = 6710784
+      TabOrder = 0
+      OnClick = WButton1Click
+    end
+    object WButton2: TWButton
+      Left = 88
+      Height = 25
+      Top = 8
+      Width = 75
+      Alpha = 100
+      Caption = 'NEW FORM'
+      Color = 6710784
+      TabOrder = 1
+      OnClick = WButton2Click
+    end
+    object WButton3: TWButton
+      Left = 168
+      Height = 25
+      Top = 7
+      Width = 75
+      Caption = 'ALPHA'
+      Color = 6710784
+      TabOrder = 2
+      OnClick = WButton3Click
+    end
+    object WButton4: TWButton
+      Left = 248
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'BUTTON 4'
+      Color = 6710784
+      TabOrder = 3
+    end
+    object lblUserName: TWLabel
+      Left = 568
+      Height = 21
+      Top = 11
+      Width = 237
+      Alignment = taCenter
+      Anchors = [akTop, akRight]
+      AutoSize = False
+      Caption = 'TEST'
+      Font.Color = clYellow
+      Font.Height = -9
+      ParentFont = False
+    end
+    object WButton5: TWButton
+      Left = 813
+      Height = 25
+      Top = 7
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'BUTTON 5'
+      Color = 6710784
+      TabOrder = 4
+      OnClick = WButton5Click
+    end
+  end
+  object WPanel2: TWPanel
+    Left = 0
+    Height = 116
+    Top = 424
+    Width = 894
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'WPanel2'
+    Color = 3359795
+    ParentColor = False
+    PopupMenu = WPopupMenu1
+    TabOrder = 1
+  end
+  object WPanel3: TWPanel
+    Left = 0
+    Height = 379
+    Top = 40
+    Width = 894
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'WPanel3'
+    ClientHeight = 379
+    ClientWidth = 894
+    Color = 3355460
+    ParentColor = False
+    TabOrder = 2
+    object WPanel4: TWPanel
+      Left = 523
+      Height = 379
+      Top = 0
+      Width = 371
+      Align = alRight
+      BevelOuter = bvNone
+      Caption = 'WPanel4'
+      ClientHeight = 379
+      ClientWidth = 371
+      Color = clNavy
+      ParentColor = False
+      TabOrder = 0
+      object WPanel7: TWPanel
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 371
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'WPanel7'
+        ClientHeight = 26
+        ClientWidth = 371
+        Color = 6704461
+        ParentColor = False
+        TabOrder = 0
+        object WPanel10: TWPanel
+          Left = 0
+          Height = 26
+          Top = 0
+          Width = 170
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'WPanel10'
+          Color = clGreen
+          ParentColor = False
+          TabOrder = 0
+        end
+      end
+      object WPanel11: TWPanel
+        Left = 8
+        Height = 82
+        Top = 40
+        Width = 242
+        Caption = 'WPanel11'
+        ClientHeight = 82
+        ClientWidth = 242
+        Color = clYellow
+        ParentColor = False
+        TabOrder = 1
+        object WLabel1: TWLabel
+          Left = 8
+          Height = 21
+          Top = 6
+          Width = 66
+          Caption = 'WLabel1'
+          Font.Height = -16
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+      end
+    end
+    object WPanel5: TWPanel
+      Left = 0
+      Height = 379
+      Top = 0
+      Width = 518
+      Align = alClient
+      BevelOuter = bvNone
+      Caption = 'WPanel5'
+      ClientHeight = 379
+      ClientWidth = 518
+      PopupMenu = WPopupMenu1
+      TabOrder = 1
+      OnClick = WPanel5Click
+      object WPanel6: TWPanel
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 518
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'WPanel6'
+        Color = 6704461
+        ParentColor = False
+        PopupMenu = WPopupMenu1
+        TabOrder = 0
+      end
+      object WPanel8: TWPanel
+        Left = 129
+        Height = 135
+        Top = 73
+        Width = 120
+        Alpha = 200
+        Caption = 'WPanel8'
+        Color = clBlue
+        ParentColor = False
+        TabOrder = 1
+        OnClick = WPanel8Click
+      end
+      object WPanel9: TWPanel
+        Left = 218
+        Height = 210
+        Top = 128
+        Width = 121
+        Alpha = 150
+        Caption = 'WPanel9'
+        ClientHeight = 210
+        ClientWidth = 121
+        Color = clFuchsia
+        ParentColor = False
+        PopupMenu = WPopupMenu1
+        TabOrder = 2
+        OnClick = WPanel9Click
+        OnMouseDown = WPanel9MouseDown
+        OnMouseMove = WPanel9MouseMove
+        OnMouseUp = WPanel9MouseUp
+        object WLabel2: TWLabel
+          Left = 24
+          Height = 15
+          Top = 47
+          Width = 68
+          Caption = 'RIGHT CLICK'
+        end
+      end
+    end
+    object WSplitter1: TWSplitter
+      Cursor = crHSplit
+      Left = 518
+      Height = 379
+      Top = 0
+      Width = 5
+      Align = alRight
+      Color = 16744576
+    end
+  end
+  object WSplitter2: TWSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 419
+    Width = 894
+    Align = alBottom
+    Color = clLime
+  end
+  object WPopupMenu1: TWPopupMenu
+    AutoPopup = False
+    Left = 414
+    Top = 142
+    object MenuItem1: TMenuItem
+      Caption = 'MenuItem1'
+      object MenuItem5: TMenuItem
+        Caption = 'MenuItem5'
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'MenuItem6'
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Message DIalog'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'MenuItem3'
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'MenuItem4'
+    end
+  end
+  object WTimer1: TWTimer
+    OnTimer = WTimer1Timer
+    Left = 624
+    Top = 176
+  end
+end
