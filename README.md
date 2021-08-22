@@ -8,6 +8,9 @@ This project is only possible thanks to [Free Pascal](https://www.freepascal.org
 * Lazarus 2.1 or newer
 * _pas2js_ 2.0 or newer
 
+### Simple Online Demo
+http://syware.ru
+
 ### Help Please
 This project is under development.
 This version is an basic implementation and many bugs need to be corrected.
