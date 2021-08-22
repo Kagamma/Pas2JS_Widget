@@ -246,6 +246,7 @@ type
     function GetText: TCaption;
     function IsAnchorsStored: Boolean;
     procedure SetAlign(AValue: TAlign);
+    procedure SetAlpha(AValue: byte);
     procedure SetAnchors(AValue: TAnchors);
     procedure SetAutoSize(AValue: boolean);
     procedure SetBorderSpacing(AValue: TControlBorderSpacing);
@@ -350,7 +351,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: NativeInt); virtual;
   public
     property Align: TAlign read FAlign write SetAlign;
-    property Alpha: byte read FAlpha write FAlpha;
+    property Alpha: byte read FAlpha write SetAlpha;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AutoSize: boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
@@ -1299,6 +1300,13 @@ begin
     else
       ReAlign;
   end;
+end;
+
+procedure TControl.SetAlpha(AValue: byte);
+begin
+  if FAlpha=AValue then Exit;
+  FAlpha:=AValue;
+  Changed;
 end;
 
 procedure TControl.SetAnchors(AValue: TAnchors);
