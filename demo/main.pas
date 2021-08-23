@@ -6,7 +6,7 @@ interface
 
 uses
   JS, web, Classes, SysUtils, Graphics, Controls, Forms, WebCtrls, Menus, Unit1,
-  Unit2, Dialogs;
+  Unit2, Dialogs, ComCtrls, StdCtrls;
 
 type
 
@@ -19,14 +19,34 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
     WButton1: TWButton;
     WButton2: TWButton;
     WButton3: TWButton;
     WButton4: TWButton;
     lblUserName: TWLabel;
     WButton5: TWButton;
+    WButton6: TWButton;
+    WButton7: TWButton;
+    WButton8: TWButton;
+    WCheckbox1: TWCheckbox;
+    WCheckbox2: TWCheckbox;
+    WCheckbox3: TWCheckbox;
+    WComboBox1: TWComboBox;
+    WDateEditBox1: TWDateEditBox;
+    WEdit1: TWEdit;
+    WFileButton1: TWFileButton;
+    WFloatEdit1: TWFloatEdit;
+    WImage1: TWImage;
+    WIntegerEdit1: TWIntegerEdit;
     WLabel1: TWLabel;
     WLabel2: TWLabel;
+    WLabel3: TWLabel;
+    WListBox1: TWListBox;
+    WMemo1: TWMemo;
+    WPageControl1: TWPageControl;
     WPanel1: TWPanel;
     WPanel10: TWPanel;
     WPanel11: TWPanel;
@@ -39,8 +59,11 @@ type
     WPanel8: TWPanel;
     WPanel9: TWPanel;
     WPopupMenu1: TWPopupMenu;
+    WRadioButton1: TWRadioButton;
+    WRadioButton2: TWRadioButton;
     WSplitter1: TWSplitter;
     WSplitter2: TWSplitter;
+    WTimeEditBox1: TWTimeEditBox;
     WTimer1: TWTimer;
     procedure FormCreate(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
@@ -48,6 +71,8 @@ type
     procedure WButton2Click(Sender: TObject);
     procedure WButton3Click(Sender: TObject);
     procedure WButton5Click(Sender: TObject);
+    procedure WListBox1Click(Sender: TObject);
+    procedure WListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure WPanel5Click(Sender: TObject);
     procedure WPanel8Click(Sender: TObject);
     procedure WPanel9Click(Sender: TObject);
@@ -79,6 +104,16 @@ implementation
 procedure TWForm1.WButton5Click(Sender: TObject);
 begin
   lblUserName.Caption := 'DEMO';
+end;
+
+procedure TWForm1.WListBox1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TWForm1.WListBox1SelectionChange(Sender: TObject; User: boolean);
+begin
+  WLabel3.Caption:= WListBox1.Items[WListBox1.ItemIndex];
 end;
 
 procedure TWForm1.WPanel5Click(Sender: TObject);
