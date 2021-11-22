@@ -31,6 +31,7 @@ type
     WButton6: TWButton;
     WButton7: TWButton;
     WButton8: TWButton;
+    WButton9: TWButton;
     WCheckbox1: TWCheckbox;
     WCheckbox2: TWCheckbox;
     WCheckbox3: TWCheckbox;
