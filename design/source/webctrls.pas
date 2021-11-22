@@ -163,6 +163,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -208,6 +209,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -252,6 +254,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
+    property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabStop;
@@ -299,6 +302,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabOrder;
@@ -365,6 +369,7 @@ type
     property OnMouseUp;
     property OnMouseWheel;
     property OnResize;
+    property PopupMenu;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -392,6 +397,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property State;
     property TabOrder;
@@ -488,6 +494,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property Transparent;
     property Visible;
@@ -520,6 +527,7 @@ type
     property HandleClass: string read FHandleClass write FHandleClass;
     property HandleId: string read FHandleId write FHandleId;
     property ParentShowHint;
+    property PopupMenu;
     property Proportional;
     property ShowHint;
     property Stretch;

@@ -48,19 +48,20 @@ type
 
   TWDataModule = class(TCustomDataModule)
   private
-    FHorizontalOffset: LongInt;
-    FPPI: LongInt;
-    FVerticalOffset: LongInt;
+    FHorizontalOffset: longint;
+    FPPI: longint;
+    FVerticalOffset: longint;
   published
     property OnCreate;
     property OnDestroy;
     property OldCreateOrder;
   published
     /// Fake
-    property HorizontalOffset: LongInt read FHorizontalOffset write FHorizontalOffset;
-    property VerticalOffset: LongInt read FVerticalOffset write FVerticalOffset;   
-    property PPI: LongInt read FPPI write FPPI;
+    property HorizontalOffset: longint read FHorizontalOffset write FHorizontalOffset;
+    property VerticalOffset: longint read FVerticalOffset write FVerticalOffset;
+    property PPI: longint read FPPI write FPPI;
   end;
+
   TWDataModuleClass = class of TWDataModule;
 
   { TWComboBox }
@@ -83,6 +84,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -125,6 +127,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -166,6 +169,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
+    property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabStop;
@@ -202,7 +206,7 @@ type
     property CharCase;
     property Color;
     property Enabled;
-    property Font; 
+    property Font;
     property HandleClass;
     property HandleId;
     property Lines;
@@ -210,6 +214,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabOrder;
@@ -250,11 +255,12 @@ type
     property Enabled;
     property Font;
     property HandleClass;
-    property HandleId; 
+    property HandleId;
     property Hint;
     property ModalResult;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -288,12 +294,13 @@ type
     property Checked;
     property Color;
     property Enabled;
-    property Font; 
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property State;
     property TabOrder;
@@ -346,6 +353,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabOrder;
     property TabStop default False;
@@ -372,6 +380,7 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property Transparent;
     property Visible;
@@ -396,11 +405,12 @@ type
     property AutoSize;
     property BorderSpacing;
     property Center;
-    property Enabled;   
+    property Enabled;
     property HandleClass;
     property HandleId;
     property ParentShowHint;
     property Proportional;
+    property PopupMenu;
     property ShowHint;
     property Stretch;
     property StretchOutEnabled;
@@ -440,7 +450,7 @@ type
     property ClientWidth;
     property Color;
     property Enabled;
-    property Font; 
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentColor;
@@ -478,7 +488,7 @@ type
   end;
 
   { TWWebSocketClient }
-  
+
   TWWebSocketClient = class(TCustomWebSocketClient)
   published
     property Url;
@@ -503,6 +513,7 @@ type
     property HandleId;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property ShowTabs;
     property TabHeight;
@@ -540,7 +551,7 @@ type
     property Color;
     property DecimalPlaces;
     property Enabled;
-    property Font;  
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentColor;
@@ -576,8 +587,8 @@ type
 
   TWIntegerEdit = class(TCustomNumericEdit)
   private
-    function GetValue: NativeInt;
-    procedure SetValue(AValue: NativeInt);
+    function GetValue: nativeint;
+    procedure SetValue(AValue: nativeint);
   protected
     procedure RealSetText(const AValue: string); override;
   public
@@ -591,7 +602,7 @@ type
     property BorderStyle;
     property Color;
     property Enabled;
-    property Font;  
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentColor;
@@ -604,7 +615,7 @@ type
     property TabOrder;
     property Text;
     property TextHint;
-    property Value: NativeInt read GetValue write SetValue;
+    property Value: nativeint read GetValue write SetValue;
     property Visible;
     property OnChange;
     property OnClick;
@@ -641,7 +652,7 @@ type
     property BorderStyle;
     property Color;
     property Enabled;
-    property Font;  
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentColor;
@@ -735,7 +746,7 @@ type
     property Color;
     property Enabled;
     property Filter;
-    property Font;   
+    property Font;
     property HandleClass;
     property HandleId;
     //property ModalResult;
@@ -744,7 +755,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property Visible; 
+    property Visible;
     property OnChange;
     property OnClick;
     property OnEnter;
@@ -808,7 +819,7 @@ type
     property BorderSpacing;
     property CurrentPage;
     property Enabled;
-    property Font;   
+    property Font;
     property HandleClass;
     property HandleId;
     property ParentFont;
@@ -846,13 +857,13 @@ type
   TWPopupMenu = class(TCustomPopupMenu)
   private
     FAlignment: TPopupAlignment;
-    FAutoPopup: Boolean;
+    FAutoPopup: boolean;
     FOnClose: TNotifyEvent;
     FOnPopup: TNotifyEvent;
     FTrackButton: TTrackButton;
   published
     property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;
-    property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
+    property AutoPopup: boolean read FAutoPopup write FAutoPopup default True;
     property TrackButton: TTrackButton read FTrackButton write FTrackButton default tbRightButton;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
@@ -880,12 +891,12 @@ end;
 
 { TWIntegerEdit }
 
-function TWIntegerEdit.GetValue: NativeInt;
+function TWIntegerEdit.GetValue: nativeint;
 begin
   Result := StrToIntDef(RealGetText, 0);
 end;
 
-procedure TWIntegerEdit.SetValue(AValue: NativeInt);
+procedure TWIntegerEdit.SetValue(AValue: nativeint);
 begin
   RealSetText(FloatToStrF(AValue, ffFixed, 20, DecimalPlaces));
 end;
@@ -897,7 +908,7 @@ end;
 
 constructor TWIntegerEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);  
+  inherited Create(AOwner);
   BeginUpdate;
   try
     DecimalPlaces := 0;

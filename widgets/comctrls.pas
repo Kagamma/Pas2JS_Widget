@@ -75,6 +75,7 @@ type
     property PageIndex;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property TabVisible;
     property Top;

@@ -1663,18 +1663,13 @@ var
   VOffSets: TRect;
   X, Y: NativeInt;
 begin
-  if AEvent.targetElement <> HandleElement then
-    if not (AEvent.targetElement is TJSHTMLCanvasElement) then
-      exit
-    else
-    if AEvent.targetElement.parentElement <> HandleElement then
-      exit;
+  Writeln(AEvent._type);
   if Assigned(PopupMenu) then
   begin
     AEvent.preventDefault;
     VOffSets := OffSets(FHandleElement);
-    X := Trunc(AEvent.x );
-    Y := Trunc(AEvent.y );
+    X := Trunc(AEvent.x);
+    Y := Trunc(AEvent.y);
     PopupMenu.Popup(X, Y);
   end;
   Result := true;
