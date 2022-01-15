@@ -2229,6 +2229,9 @@ begin
     end;
     with FContentElement do
     begin
+      /// Cursor
+      Style.SetProperty('cursor', JSCursor(Cursor));
+
       /// Clear
       InnerHTML := '';
       /// Layout

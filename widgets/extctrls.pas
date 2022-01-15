@@ -559,6 +559,9 @@ begin
   begin
     with HandleElement do
     begin
+      /// Transparency
+
+      style.setProperty('opacity',  FloatToStr((1*Alpha)/255));
       /// Focus highlight
       Style.SetProperty('outline', 'none');
       /// Load image
@@ -737,6 +740,7 @@ begin
   begin
     with HandleElement do
     begin
+      style.removeProperty('font');
       /// Bevel/Border
       if (FBevelOuter = bvNone) then
       begin
@@ -784,6 +788,8 @@ begin
         Style.SetProperty('border-right-color', JSColor(VBottomColor, Alpha));
         Style.SetProperty('border-bottom-color', JSColor(VBottomColor, Alpha));
       end;
+      Style.SetProperty('overflow', 'auto');
+
       /// Focus highlight
       Style.SetProperty('outline', 'none');
       /// Prevent text selection
