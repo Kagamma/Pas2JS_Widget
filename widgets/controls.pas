@@ -2027,7 +2027,6 @@ begin
       begin
         FHandleElement.AppendChild(AControl.HandleElement);
       end;
-      ReAlign;
       /// Update tab order
       AControl.SetTabOrder(FControls.Length); /// New order
     end;
@@ -2048,7 +2047,6 @@ begin
       begin
         FHandleElement.RemoveChild(AControl.HandleElement);
       end;
-      ReAlign;
       /// Update tab order
       UpdateTabOrder(nil);
     end;
@@ -2232,11 +2230,11 @@ begin
           if akTop in VControl.Anchors then
             newtop := VControl.Top;
           if akBottom in VControl.Anchors then
-            newbottom := Height - (FDesignRect.Bottom - VControl.FDesignRect.Bottom);
+            newbottom := Height - ((FDesignRect.Bottom - FDesignRect.Top) - (VControl.FDesignRect.Bottom-VControl.FDesignRect.Top)-VControl.FDesignRect.Top);
           if akRight in VControl.Anchors then
-            newright := Width - (FDesignRect.Right - VControl.FDesignRect.Right);
-
-          if [akLeft, akRight] <= VControl.Anchors then begin
+            newright := Width - ((FDesignRect.Right - FDesignRect.Left) - (VControl.FDesignRect.Right-VControl.FDesignRect.Left)-VControl.FDesignRect.Left);
+          if [akLeft, akRight] <= VControl.Anchors then
+          begin
             VControl.Left := newleft;
             VControl.Width := newright - newleft + 1;
           end else if akLeft in VControl.Anchors then
@@ -2495,10 +2493,6 @@ end;
 procedure TControl.ReAlign;
 begin
   AlignControls;
-  if (Assigned(FParent)) then
-  begin
-    FParent.ReAlign;
-  end;
   Invalidate;
 end;
 
