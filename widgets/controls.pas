@@ -324,6 +324,7 @@ type
     procedure RegisterChild(AControl: TControl); virtual;
     procedure UnRegisterChild(AControl: TControl); virtual;
     procedure AlignControls; virtual;
+    procedure AlignControls2; virtual;
     function RealGetText: string; virtual;
     procedure RealSetText(const AValue: string); virtual;
     procedure BorderSpacingChanged(Sender: TObject); virtual;
@@ -2027,6 +2028,7 @@ begin
       begin
         FHandleElement.AppendChild(AControl.HandleElement);
       end;
+      ReAlign;
       /// Update tab order
       AControl.SetTabOrder(FControls.Length); /// New order
     end;
@@ -2047,6 +2049,7 @@ begin
       begin
         FHandleElement.RemoveChild(AControl.HandleElement);
       end;
+      ReAlign;
       /// Update tab order
       UpdateTabOrder(nil);
     end;
@@ -2054,6 +2057,11 @@ begin
 end;
 
 procedure TControl.AlignControls;
+begin
+  //AlignControls2;
+end;
+
+procedure TControl.AlignControls2;
 
   function AnchorsToStr(const aAnchors: TAnchors): String;
   const
@@ -2215,6 +2223,7 @@ begin
           VControl.Width := VRight - VLeft - VSpacing.Left - VSpacing.Right - (VSpacing.Around * 2);
           VControl.Height := VBotton - VTop - VSpacing.Top - VSpacing.Bottom - (VSpacing.Around * 2);
         finally
+          Exclude(VControl.FControlFlags, cfInAlignControls);
           VControl.EndUpdate;
         end;
       end;
@@ -2493,6 +2502,10 @@ end;
 procedure TControl.ReAlign;
 begin
   AlignControls;
+  if (Assigned(FParent)) then
+  begin
+    FParent.ReAlign;
+  end;
   Invalidate;
 end;
 
