@@ -1274,7 +1274,7 @@ end;
 
 function TControl.GetClientRect: TRect;
 begin
-  Result := Rect(0, 0, FWidth - 1, FHeight - 1);
+  Result := Rect(0, 0, FWidth, FHeight);
 end;
 
 function TControl.GetClientWidth: NativeInt;
@@ -1796,6 +1796,7 @@ procedure TControl.Loaded;
 begin
   inherited Loaded;
   FDesignRect := Rect(Left, Top, Left + Width - 1, Top + Height - 1);
+  Writeln('yus');
   Changed;
 end;
 
@@ -1806,7 +1807,7 @@ var
   function AdjustWithPPI(aValue: Integer): Integer;
   begin
     if Assigned(form) then
-      Result := Trunc(96 * aValue / form.DesignTimePPI)
+      Result := trunc(96 * aValue / form.DesignTimePPI)
     else
       Result := aValue;
   end;
@@ -2027,6 +2028,7 @@ begin
       begin
         FHandleElement.AppendChild(AControl.HandleElement);
       end;
+      ReAlign;
       /// Update tab order
       AControl.SetTabOrder(FControls.Length); /// New order
     end;
@@ -2047,6 +2049,7 @@ begin
       begin
         FHandleElement.RemoveChild(AControl.HandleElement);
       end;
+      ReAlign;
       /// Update tab order
       UpdateTabOrder(nil);
     end;
@@ -2083,6 +2086,8 @@ var
   VWidth: NativeInt;
   newleft, newtop, newright, newbottom: NativeInt;
 begin
+  if csLoading in ComponentState then
+    exit;
   if cfInAlignControls in FControlFlags then
     Exit;
   Include(FControlFlags, cfInAlignControls);
@@ -2215,12 +2220,14 @@ begin
           VControl.Width := VRight - VLeft - VSpacing.Left - VSpacing.Right - (VSpacing.Around * 2);
           VControl.Height := VBotton - VTop - VSpacing.Top - VSpacing.Bottom - (VSpacing.Around * 2);
         finally
+          Exclude(VControl.FControlFlags, cfInAlignControls);
           VControl.EndUpdate;
         end;
       end;
     end;
     { alNone, but anchored }
-    for VIndex := 0 to (FControls.Length - 1) do begin
+    for VIndex := 0 to (FControls.Length - 1) do
+    begin
       VControl := TControl(FControls[VIndex]);
       if Assigned(VControl) and (VControl.Align = alNone) and VControl.Visible and (VControl.Anchors <> []) then begin
         VControl.BeginUpdate;
@@ -2236,15 +2243,14 @@ begin
           if [akLeft, akRight] <= VControl.Anchors then
           begin
             VControl.Left := newleft;
-            VControl.Width := newright - newleft + 1;
+            VControl.Width := newright - newleft;
           end else if akLeft in VControl.Anchors then
             VControl.Left := newleft
           else if akRight in VControl.Anchors then
             VControl.Left := newright - VControl.Width;
-
           if [akTop, akBottom] <= VControl.Anchors then begin
             VControl.Top := newtop;
-            VControl.Height := newbottom - newtop + 1;
+            VControl.Height := newbottom - newtop;
           end else if akTop in VControl.Anchors then
             VControl.Top := newtop
           else if akBottom in VControl.Anchors then
@@ -2493,6 +2499,10 @@ end;
 procedure TControl.ReAlign;
 begin
   AlignControls;
+  if (Assigned(FParent)) then
+  begin
+    FParent.ReAlign;
+  end;
   Invalidate;
 end;
 
