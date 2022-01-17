@@ -37,7 +37,7 @@ object WForm1: TWForm1
     object WButton2: TWButton
       Left = 88
       Height = 25
-      Top = 8
+      Top = 7
       Width = 75
       Alpha = 100
       Caption = 'NEW FORM'
@@ -58,7 +58,7 @@ object WForm1: TWForm1
     object WButton4: TWButton
       Left = 248
       Height = 25
-      Top = 8
+      Top = 7
       Width = 75
       Caption = 'BUTTON 4'
       Color = 6710784
@@ -74,7 +74,6 @@ object WForm1: TWForm1
       AutoSize = False
       Caption = 'TEST'
       Font.Color = clYellow
-      Font.Height = -9
       ParentFont = False
     end
     object WButton5: TWButton
@@ -166,11 +165,12 @@ object WForm1: TWForm1
       object WPanel11: TWPanel
         Left = 8
         Height = 82
-        Top = 40
-        Width = 242
+        Top = 32
+        Width = 282
+        Anchors = [akTop, akLeft, akRight]
         Caption = 'WPanel11'
         ClientHeight = 82
-        ClientWidth = 242
+        ClientWidth = 282
         Color = clYellow
         ParentColor = False
         TabOrder = 1
@@ -419,7 +419,7 @@ object WForm1: TWForm1
         Alignment = taRightJustify
         DecimalPlaces = 2
         TabOrder = 13
-        Text = '0,00'
+        Text = '0.00'
       end
       object WIntegerEdit1: TWIntegerEdit
         Left = 16
@@ -437,7 +437,7 @@ object WForm1: TWForm1
         Top = 392
         Width = 144
         TabOrder = 15
-        Text = '30.12.1899'
+        Text = '12/30/1899'
       end
       object WTimeEditBox1: TWTimeEditBox
         Left = 136
