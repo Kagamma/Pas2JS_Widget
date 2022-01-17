@@ -324,7 +324,6 @@ type
     procedure RegisterChild(AControl: TControl); virtual;
     procedure UnRegisterChild(AControl: TControl); virtual;
     procedure AlignControls; virtual;
-    procedure AlignControls2; virtual;
     function RealGetText: string; virtual;
     procedure RealSetText(const AValue: string); virtual;
     procedure BorderSpacingChanged(Sender: TObject); virtual;
@@ -1275,7 +1274,7 @@ end;
 
 function TControl.GetClientRect: TRect;
 begin
-  Result := Rect(0, 0, FWidth - 1, FHeight - 1);
+  Result := Rect(0, 0, FWidth, FHeight);
 end;
 
 function TControl.GetClientWidth: NativeInt;
@@ -1797,6 +1796,7 @@ procedure TControl.Loaded;
 begin
   inherited Loaded;
   FDesignRect := Rect(Left, Top, Left + Width - 1, Top + Height - 1);
+  Writeln('yus');
   Changed;
 end;
 
@@ -1807,7 +1807,7 @@ var
   function AdjustWithPPI(aValue: Integer): Integer;
   begin
     if Assigned(form) then
-      Result := Trunc(96 * aValue / form.DesignTimePPI)
+      Result := trunc(96 * aValue / form.DesignTimePPI)
     else
       Result := aValue;
   end;
@@ -2057,11 +2057,6 @@ begin
 end;
 
 procedure TControl.AlignControls;
-begin
-  //AlignControls2;
-end;
-
-procedure TControl.AlignControls2;
 
   function AnchorsToStr(const aAnchors: TAnchors): String;
   const
@@ -2091,6 +2086,8 @@ var
   VWidth: NativeInt;
   newleft, newtop, newright, newbottom: NativeInt;
 begin
+  if csLoading in ComponentState then
+    exit;
   if cfInAlignControls in FControlFlags then
     Exit;
   Include(FControlFlags, cfInAlignControls);
@@ -2229,7 +2226,8 @@ begin
       end;
     end;
     { alNone, but anchored }
-    for VIndex := 0 to (FControls.Length - 1) do begin
+    for VIndex := 0 to (FControls.Length - 1) do
+    begin
       VControl := TControl(FControls[VIndex]);
       if Assigned(VControl) and (VControl.Align = alNone) and VControl.Visible and (VControl.Anchors <> []) then begin
         VControl.BeginUpdate;
@@ -2245,15 +2243,14 @@ begin
           if [akLeft, akRight] <= VControl.Anchors then
           begin
             VControl.Left := newleft;
-            VControl.Width := newright - newleft + 1;
+            VControl.Width := newright - newleft;
           end else if akLeft in VControl.Anchors then
             VControl.Left := newleft
           else if akRight in VControl.Anchors then
             VControl.Left := newright - VControl.Width;
-
           if [akTop, akBottom] <= VControl.Anchors then begin
             VControl.Top := newtop;
-            VControl.Height := newbottom - newtop + 1;
+            VControl.Height := newbottom - newtop;
           end else if akTop in VControl.Anchors then
             VControl.Top := newtop
           else if akBottom in VControl.Anchors then
