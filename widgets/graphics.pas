@@ -274,7 +274,7 @@ const
 const
   /// Safe Font
   ffMonospace = 'Consolas, monaco, monospace';
-  ffSans = '"Arial Narrow", Arial, "Helvetica Condensed", Helvetica, sans-serif';
+  ffSans = '"Segoe UI", Arial, "Helvetica Condensed", Helvetica, sans-serif';
   ffTimes = '"Times New Roman", Times, serif';
 
 function JSColor(const AColor: TColor; AAlpha: byte): string; overload;

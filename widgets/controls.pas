@@ -1796,7 +1796,6 @@ procedure TControl.Loaded;
 begin
   inherited Loaded;
   FDesignRect := Rect(Left, Top, Left + Width - 1, Top + Height - 1);
-  Writeln('yus');
   Changed;
 end;
 
