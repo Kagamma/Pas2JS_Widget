@@ -156,11 +156,6 @@ type
 
   TFocusSearchDirection = (fsdFirst, fsdLast, fsdNext, fsdPrev);
 
-  TControlFlag = (
-    cfInAlignControls
-  );
-  TControlFlags = set of TControlFlag;
-
   { TControlBorderSpacing }
 
   TControlBorderSpacing = class(TPersistent)
@@ -205,7 +200,6 @@ type
     FBorderStyle: TBorderStyle;
     FCaption: TCaption;
     FColor: TColor;
-    FControlFlags: TControlFlags;
     FControls: TJSArray; /// The child controls
     FCursor: TCursor;
     FDesignRect: TRect;
@@ -2087,9 +2081,6 @@ var
 begin
   if csLoading in ComponentState then
     exit;
-  if cfInAlignControls in FControlFlags then
-    Exit;
-  Include(FControlFlags, cfInAlignControls);
   BeginUpdate;
   try
     VLeft := 0;
@@ -2219,7 +2210,6 @@ begin
           VControl.Width := VRight - VLeft - VSpacing.Left - VSpacing.Right - (VSpacing.Around * 2);
           VControl.Height := VBotton - VTop - VSpacing.Top - VSpacing.Bottom - (VSpacing.Around * 2);
         finally
-          Exclude(VControl.FControlFlags, cfInAlignControls);
           VControl.EndUpdate;
         end;
       end;
@@ -2260,7 +2250,6 @@ begin
       end;
     end;
   finally
-    Exclude(FControlFlags, cfInAlignControls);
     EndUpdate;
   end;
 end;
