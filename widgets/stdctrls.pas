@@ -2204,9 +2204,7 @@ begin
     begin
       /// Transparent
       if (FTransparent) then
-      begin
         Style.SetProperty('background-color', 'transparent');
-      end;
       /// Focus highlight
       Style.SetProperty('outline', 'none');
       /// Prevent text selection
@@ -2229,9 +2227,11 @@ begin
     end;
     with FContentElement do
     begin
+      writeln(Self.Width);
       /// Cursor
       Style.SetProperty('cursor', JSCursor(Cursor));
-
+      Style.setProperty('width', IntToStr(Self.Width)+'px');
+      Style.setProperty('height', IntToStr(Self.Height)+'px');
       /// Clear
       InnerHTML := '';
       /// Layout
@@ -2258,6 +2258,7 @@ begin
       Style.SetProperty('text-overflow', 'ellipsis');
       /// Caption
       InnerHTML := Self.Caption;
+
     end;
   end;
 end;
