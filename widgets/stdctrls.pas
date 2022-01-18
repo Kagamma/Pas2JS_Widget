@@ -2227,11 +2227,10 @@ begin
     end;
     with FContentElement do
     begin
-      writeln(Self.Width);
       /// Cursor
       Style.SetProperty('cursor', JSCursor(Cursor));
-      Style.setProperty('width', IntToStr(Self.Width)+'px');
-      Style.setProperty('height', IntToStr(Self.Height)+'px');
+      Style.setProperty('width', IntToStr(Self.ClientWidth)+'px');
+      Style.setProperty('height', IntToStr(Self.ClientHeight)+'px');
       /// Clear
       InnerHTML := '';
       /// Layout
