@@ -788,7 +788,6 @@ begin
         Style.SetProperty('border-right-color', JSColor(VBottomColor, Alpha));
         Style.SetProperty('border-bottom-color', JSColor(VBottomColor, Alpha));
       end;
-      Style.SetProperty('overflow', 'auto');
 
       /// Focus highlight
       Style.SetProperty('outline', 'none');
